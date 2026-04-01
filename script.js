@@ -1,10 +1,10 @@
 // ========================================
-// IPA Trainer - Full Application with Font Awesome Icons & Responsive Design
+// IPA Trainer - Full Application with Sidebar Menu
 // ========================================
 
 class IPATrainer {
     constructor() {
-        // DOM Elements
+        // DOM Elements - Main
         this.wordInput = document.getElementById('wordInput');
         this.searchBtn = document.getElementById('searchBtn');
         this.resultCard = document.getElementById('resultCard');
@@ -17,6 +17,12 @@ class IPATrainer {
         this.endSymbol = document.getElementById('endSymbol');
         this.symbolsGrid = document.getElementById('symbolsGrid');
         
+        // Sidebar Elements
+        this.menuToggle = document.getElementById('menuToggle');
+        this.sidebar = document.getElementById('sidebar');
+        this.sidebarOverlay = document.getElementById('sidebarOverlay');
+        this.sidebarClose = document.getElementById('sidebarClose');
+        
         // Data
         this.ipaData = null;
         this.currentWord = '';
@@ -27,7 +33,7 @@ class IPATrainer {
         this.trainingQuestions = [];
         this.currentTraining = 0;
         this.trainingScore = 0;
-        this.screenManager = null;
+        this.currentPage = 'home';
         
         // Initialize
         this.init();
@@ -36,150 +42,136 @@ class IPATrainer {
     async init() {
         await this.loadIPAData();
         this.setupEventListeners();
+        this.setupSidebar();
+        this.setupPageNavigation();
         this.loadSuggestions();
         this.updateUI();
         this.setupSpeechRecognition();
         this.checkBrowserSupport();
-        this.initScreenManager();
+        this.loadSavedSettings();
+        this.setupResponsive();
     }
     
-    initScreenManager() {
-        // Wait for screen manager if it exists
-        if (window.screenManager) {
-            this.screenManager = window.screenManager;
-            this.setupResponsiveListeners();
-        } else {
-            // Create a simple fallback
-            this.setupSimpleResponsive();
+    setupSidebar() {
+        // Open sidebar
+        this.menuToggle?.addEventListener('click', () => {
+            this.sidebar.classList.add('open');
+            this.sidebarOverlay.classList.add('active');
+            this.menuToggle.classList.add('active');
+        });
+        
+        // Close sidebar
+        const closeSidebar = () => {
+            this.sidebar.classList.remove('open');
+            this.sidebarOverlay.classList.remove('active');
+            this.menuToggle.classList.remove('active');
+        };
+        
+        this.sidebarClose?.addEventListener('click', closeSidebar);
+        this.sidebarOverlay?.addEventListener('click', closeSidebar);
+        
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.sidebar.classList.contains('open')) {
+                closeSidebar();
+            }
+        });
+    }
+    
+    setupPageNavigation() {
+        // Navigation menu items
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const pageId = item.dataset.page;
+                if (pageId) {
+                    this.navigateToPage(pageId);
+                    // Close sidebar on mobile
+                    if (window.innerWidth <= 768) {
+                        this.sidebar.classList.remove('open');
+                        this.sidebarOverlay.classList.remove('active');
+                    }
+                }
+            });
+        });
+        
+        // Theme switcher
+        const themeBtns = document.querySelectorAll('.theme-btn');
+        themeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.theme;
+                this.setTheme(theme);
+                
+                // Update active state
+                themeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                localStorage.setItem('theme', theme);
+            });
+        });
+    }
+    
+    navigateToPage(pageId) {
+        // Hide all pages
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+        
+        // Show selected page
+        const targetPage = document.getElementById(`page-${pageId}`);
+        if (targetPage) {
+            targetPage.classList.add('active');
+            this.currentPage = pageId;
+            localStorage.setItem('lastPage', pageId);
+        }
+        
+        // Load specific page content if needed
+        if (pageId === 'training') {
+            this.loadTraining();
+        } else if (pageId === 'dictionary') {
+            this.loadDictionary();
+        } else if (pageId === 'history') {
+            this.loadHistoryPanel();
         }
     }
     
-    setupResponsiveListeners() {
-        // Listen to device changes
-        window.addEventListener('deviceChange', (e) => {
-            this.adjustForDevice(e.detail.device.type);
-        });
-        
-        // Listen to orientation changes
-        window.addEventListener('orientationChange', (e) => {
-            this.adjustForOrientation(e.detail.newOrientation);
-        });
+    setTheme(theme) {
+        if (theme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
     }
     
-    setupSimpleResponsive() {
-        // Simple resize handler as fallback
+    loadSavedSettings() {
+        // Load theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            this.setTheme(savedTheme);
+            const themeBtns = document.querySelectorAll('.theme-btn');
+            themeBtns.forEach(btn => {
+                if (btn.dataset.theme === savedTheme) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        // Load last page
+        const lastPage = localStorage.getItem('lastPage');
+        if (lastPage && lastPage !== 'home') {
+            this.navigateToPage(lastPage);
+        }
+    }
+    
+    setupResponsive() {
         const handleResize = () => {
             const width = window.innerWidth;
-            if (width <= 768) {
-                document.body.classList.add('device-mobile');
-                document.body.classList.remove('device-desktop');
-            } else {
-                document.body.classList.add('device-desktop');
-                document.body.classList.remove('device-mobile');
+            if (width > 768 && this.sidebar.classList.contains('open')) {
+                // Optional: auto close sidebar on desktop
             }
         };
         
-        handleResize();
         window.addEventListener('resize', handleResize);
-    }
-    
-    adjustForDevice(deviceType) {
-        switch(deviceType) {
-            case 'mobile':
-                this.enableMobileMode();
-                break;
-            case 'tablet':
-                this.enableTabletMode();
-                break;
-            default:
-                this.enableDesktopMode();
-        }
-    }
-    
-    adjustForOrientation(orientation) {
-        if (orientation === 'landscape' && window.innerWidth <= 768) {
-            document.body.classList.add('landscape-mobile');
-            const resultCard = document.querySelector('.result-card');
-            if (resultCard) {
-                resultCard.style.maxHeight = '60vh';
-                resultCard.style.overflowY = 'auto';
-            }
-        } else {
-            document.body.classList.remove('landscape-mobile');
-            const resultCard = document.querySelector('.result-card');
-            if (resultCard) {
-                resultCard.style.maxHeight = 'none';
-                resultCard.style.overflowY = 'visible';
-            }
-        }
-    }
-    
-    enableMobileMode() {
-        // Adjust touch targets
-        const buttons = document.querySelectorAll('button');
-        buttons.forEach(btn => {
-            btn.style.minHeight = '44px';
-        });
-        
-        // Adjust font sizes
-        document.body.style.fontSize = '14px';
-        
-        // Stack breakdown cards vertically
-        const breakdownContainer = document.querySelector('.breakdown-container');
-        if (breakdownContainer) {
-            breakdownContainer.style.flexDirection = 'column';
-            breakdownContainer.style.gap = '15px';
-        }
-        
-        // Hide arrows on mobile
-        const arrows = document.querySelectorAll('.breakdown-arrow');
-        arrows.forEach(arrow => {
-            arrow.style.display = 'none';
-        });
-        
-        // Make tabs scrollable horizontally
-        const tabsHeader = document.querySelector('.tabs-header');
-        if (tabsHeader) {
-            tabsHeader.style.overflowX = 'auto';
-            tabsHeader.style.flexWrap = 'nowrap';
-            tabsHeader.style.WebkitOverflowScrolling = 'touch';
-        }
-    }
-    
-    enableTabletMode() {
-        document.body.style.fontSize = '15px';
-        
-        const breakdownContainer = document.querySelector('.breakdown-container');
-        if (breakdownContainer) {
-            breakdownContainer.style.flexDirection = 'row';
-            breakdownContainer.style.gap = '10px';
-        }
-        
-        const arrows = document.querySelectorAll('.breakdown-arrow');
-        arrows.forEach(arrow => {
-            arrow.style.display = 'block';
-        });
-    }
-    
-    enableDesktopMode() {
-        document.body.style.fontSize = '16px';
-        
-        const breakdownContainer = document.querySelector('.breakdown-container');
-        if (breakdownContainer) {
-            breakdownContainer.style.flexDirection = 'row';
-            breakdownContainer.style.gap = '20px';
-        }
-        
-        const arrows = document.querySelectorAll('.breakdown-arrow');
-        arrows.forEach(arrow => {
-            arrow.style.display = 'block';
-        });
-        
-        const tabsHeader = document.querySelector('.tabs-header');
-        if (tabsHeader) {
-            tabsHeader.style.overflowX = 'visible';
-            tabsHeader.style.flexWrap = 'wrap';
-        }
     }
     
     async loadIPAData() {
@@ -198,48 +190,103 @@ class IPATrainer {
             vowels: [
                 { symbol: 'iː', description: 'صوت طويل مثل see', examples: ['see', 'bee'], type: 'vowel' },
                 { symbol: 'ɪ', description: 'صوت قصير مثل sit', examples: ['sit', 'big'], type: 'vowel' },
-                { symbol: 'æ', description: 'صوت مثل cat', examples: ['cat', 'hat'], type: 'vowel' }
+                { symbol: 'e', description: 'صوت مثل bed', examples: ['bed', 'red'], type: 'vowel' },
+                { symbol: 'æ', description: 'صوت مثل cat', examples: ['cat', 'hat'], type: 'vowel' },
+                { symbol: 'ɑː', description: 'صوت طويل مثل car', examples: ['car', 'star'], type: 'vowel' },
+                { symbol: 'ɒ', description: 'صوت قصير مثل hot', examples: ['hot', 'dog'], type: 'vowel' },
+                { symbol: 'ɔː', description: 'صوت طويل مثل saw', examples: ['saw', 'law'], type: 'vowel' },
+                { symbol: 'ʊ', description: 'صوت قصير مثل book', examples: ['book', 'look'], type: 'vowel' },
+                { symbol: 'uː', description: 'صوت طويل مثل food', examples: ['food', 'moon'], type: 'vowel' },
+                { symbol: 'ʌ', description: 'صوت قصير مثل cup', examples: ['cup', 'sun'], type: 'vowel' },
+                { symbol: 'ɜː', description: 'صوت طويل مثل bird', examples: ['bird', 'her'], type: 'vowel' },
+                { symbol: 'ə', description: 'صوت schwa مثل about', examples: ['about', 'sofa'], type: 'vowel' }
             ],
             consonants: [
+                { symbol: 'p', description: 'صوت انفجاري مثل pen', examples: ['pen', 'paper'], type: 'consonant' },
+                { symbol: 'b', description: 'صوت انفجاري مجهور مثل book', examples: ['book', 'baby'], type: 'consonant' },
+                { symbol: 't', description: 'صوت انفجاري مثل tea', examples: ['tea', 'table'], type: 'consonant' },
+                { symbol: 'd', description: 'صوت انفجاري مجهور مثل dog', examples: ['dog', 'door'], type: 'consonant' },
+                { symbol: 'k', description: 'صوت انفجاري مثل cat', examples: ['cat', 'kite'], type: 'consonant' },
+                { symbol: 'g', description: 'صوت انفجاري مجهور مثل go', examples: ['go', 'big'], type: 'consonant' },
+                { symbol: 'f', description: 'صوت احتكاكي مثل fish', examples: ['fish', 'phone'], type: 'consonant' },
+                { symbol: 'v', description: 'صوت احتكاكي مجهور مثل voice', examples: ['voice', 'very'], type: 'consonant' },
                 { symbol: 'θ', description: 'صوت بين الأسنان مثل think', examples: ['think', 'three'], type: 'consonant' },
                 { symbol: 'ð', description: 'صوت مجهور مثل this', examples: ['this', 'mother'], type: 'consonant' },
-                { symbol: 'ʃ', description: 'صوت ش مثل she', examples: ['she', 'fish'], type: 'consonant' }
+                { symbol: 's', description: 'صوت صفير مثل see', examples: ['see', 'sun'], type: 'consonant' },
+                { symbol: 'z', description: 'صوت صفير مجهور مثل zoo', examples: ['zoo', 'zero'], type: 'consonant' },
+                { symbol: 'ʃ', description: 'صوت ش مثل she', examples: ['she', 'fish'], type: 'consonant' },
+                { symbol: 'ʒ', description: 'صوت مجهور مثل vision', examples: ['vision', 'measure'], type: 'consonant' },
+                { symbol: 'h', description: 'صوت هوائي مثل hat', examples: ['hat', 'house'], type: 'consonant' },
+                { symbol: 'm', description: 'صوت أنفي مثل man', examples: ['man', 'mother'], type: 'consonant' },
+                { symbol: 'n', description: 'صوت أنفي مثل no', examples: ['no', 'name'], type: 'consonant' },
+                { symbol: 'ŋ', description: 'صوت أنفي مثل sing', examples: ['sing', 'ring'], type: 'consonant' },
+                { symbol: 'l', description: 'صوت جانبي مثل love', examples: ['love', 'light'], type: 'consonant' },
+                { symbol: 'r', description: 'صوت لثوي مثل red', examples: ['red', 'run'], type: 'consonant' },
+                { symbol: 'j', description: 'صوت شبه صامت مثل yes', examples: ['yes', 'you'], type: 'consonant' },
+                { symbol: 'w', description: 'صوت شبه صامت مثل we', examples: ['we', 'water'], type: 'consonant' },
+                { symbol: 'tʃ', description: 'صوت مركب مثل church', examples: ['church', 'chair'], type: 'consonant' },
+                { symbol: 'dʒ', description: 'صوت مركب مجهور مثل judge', examples: ['judge', 'job'], type: 'consonant' }
             ],
             diphthongs: [
-                { symbol: 'eɪ', description: 'صوت مزدوج مثل say', examples: ['say', 'day'], type: 'diphthong' }
+                { symbol: 'eɪ', description: 'صوت مزدوج مثل say', examples: ['say', 'day'], type: 'diphthong' },
+                { symbol: 'aɪ', description: 'صوت مزدوج مثل my', examples: ['my', 'eye'], type: 'diphthong' },
+                { symbol: 'ɔɪ', description: 'صوت مزدوج مثل boy', examples: ['boy', 'toy'], type: 'diphthong' },
+                { symbol: 'əʊ', description: 'صوت مزدوج مثل go', examples: ['go', 'no'], type: 'diphthong' },
+                { symbol: 'aʊ', description: 'صوت مزدوج مثل now', examples: ['now', 'how'], type: 'diphthong' },
+                { symbol: 'ɪə', description: 'صوت مزدوج مثل here', examples: ['here', 'near'], type: 'diphthong' },
+                { symbol: 'eə', description: 'صوت مزدوج مثل hair', examples: ['hair', 'care'], type: 'diphthong' },
+                { symbol: 'ʊə', description: 'صوت مزدوج مثل pure', examples: ['pure', 'cure'], type: 'diphthong' }
             ]
         };
     }
     
     setupEventListeners() {
-        this.searchBtn.addEventListener('click', () => this.searchWord());
-        this.wordInput.addEventListener('keypress', (e) => {
+        this.searchBtn?.addEventListener('click', () => this.searchWord());
+        this.wordInput?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.searchWord();
         });
         this.playSoundBtn?.addEventListener('click', () => this.playPronunciation());
         this.recordBtn?.addEventListener('click', () => this.openRecordModal());
         
-        // Theme toggle
-        const themeToggle = document.getElementById('themeToggle');
-        themeToggle?.addEventListener('click', () => this.toggleTheme());
+        // Training
+        const nextBtn = document.getElementById('nextTrainingQuestion');
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                this.currentTraining++;
+                this.displayTrainingQuestion();
+            });
+        }
         
-        // Tab switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
-        });
+        // Quiz
+        const startQuizBtn = document.getElementById('startQuiz');
+        startQuizBtn?.addEventListener('click', () => this.startQuiz());
+        
+        // Reset history
+        const resetBtn = document.getElementById('resetHistory');
+        resetBtn?.addEventListener('click', () => this.resetHistory());
         
         // Dictionary filters
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => this.filterDictionary(btn.dataset.filter));
         });
         
-        // Reset history
-        const resetBtn = document.getElementById('resetHistory');
-        resetBtn?.addEventListener('click', () => this.resetHistory());
+        // Report issue
+        const reportBtn = document.getElementById('reportIssueBtn');
+        const reportModal = document.getElementById('reportModal');
+        const submitIssue = document.getElementById('submitIssue');
         
-        // Start quiz
-        const startQuizBtn = document.getElementById('startQuiz');
-        startQuizBtn?.addEventListener('click', () => this.startQuiz());
+        reportBtn?.addEventListener('click', () => this.openModal(reportModal));
+        
+        submitIssue?.addEventListener('click', () => {
+            const description = document.getElementById('issueDescription')?.value;
+            if (description) {
+                this.showNotification('تم استلام البلاغ، شكراً لك!', 'success');
+                this.closeModal(reportModal);
+                document.getElementById('issueDescription').value = '';
+            } else {
+                this.showNotification('الرجاء كتابة وصف المشكلة', 'warning');
+            }
+        });
         
         // Modal close
         document.querySelectorAll('.modal-close').forEach(btn => {
@@ -264,6 +311,7 @@ class IPATrainer {
                 this.displayResult(word, ipa);
                 this.saveToHistory(word, ipa);
                 this.updateUI();
+                this.updateAchievements();
                 this.showNotification('تم العثور على الكلمة!', 'success');
             } else {
                 this.showNotification('لم يتم العثور على الكلمة', 'error');
@@ -300,7 +348,15 @@ class IPATrainer {
             'fish': '/fɪʃ/',
             'house': '/haʊs/',
             'beautiful': '/ˈbjuːtɪfəl/',
-            'phone': '/fəʊn/'
+            'phone': '/fəʊn/',
+            'hello': '/həˈləʊ/',
+            'world': '/wɜːld/',
+            'apple': '/ˈæpəl/',
+            'car': '/kɑː/',
+            'book': '/bʊk/',
+            'school': '/skuːl/',
+            'mother': '/ˈmʌðə/',
+            'father': '/ˈfɑːðə/'
         };
         return localWords[word] || null;
     }
@@ -416,14 +472,18 @@ class IPATrainer {
         const modalExamples = document.getElementById('modalExamples');
         const modalPlaySound = document.getElementById('modalPlaySound');
         
-        modalSymbol.innerHTML = `<i class="fas fa-microphone-alt"></i> /${symbol}/`;
-        modalDescription.textContent = symbolData.description;
+        if (modalSymbol) modalSymbol.innerHTML = `<i class="fas fa-microphone-alt"></i> /${symbol}/`;
+        if (modalDescription) modalDescription.textContent = symbolData.description;
         
-        modalExamples.innerHTML = symbolData.examples
-            .map(ex => `<li><i class="fas fa-language"></i> ${ex}</li>`)
-            .join('');
+        if (modalExamples) {
+            modalExamples.innerHTML = symbolData.examples
+                .map(ex => `<li><i class="fas fa-language"></i> ${ex}</li>`)
+                .join('');
+        }
         
-        modalPlaySound.onclick = () => this.playSymbolSound(symbol);
+        if (modalPlaySound) {
+            modalPlaySound.onclick = () => this.playSymbolSound(symbol);
+        }
         
         this.openModal(modal);
     }
@@ -497,10 +557,10 @@ class IPATrainer {
         
         const modal = document.getElementById('recordModal');
         const recordWord = document.getElementById('recordWord');
-        recordWord.textContent = this.currentWord;
+        if (recordWord) recordWord.textContent = this.currentWord;
         
         const startBtn = document.getElementById('startRecording');
-        startBtn.onclick = () => this.startRecording();
+        if (startBtn) startBtn.onclick = () => this.startRecording();
         
         this.openModal(modal);
     }
@@ -535,20 +595,6 @@ class IPATrainer {
         };
         
         this.recognition.start();
-    }
-    
-    switchTab(tabId) {
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.tab === tabId);
-        });
-        
-        document.querySelectorAll('.tab-panel').forEach(panel => {
-            panel.classList.toggle('active', panel.id === `${tabId}Panel`);
-        });
-        
-        if (tabId === 'training') this.loadTraining();
-        if (tabId === 'dictionary') this.loadDictionary();
-        if (tabId === 'history') this.loadHistoryPanel();
     }
     
     loadTraining() {
@@ -675,7 +721,7 @@ class IPATrainer {
                     <h2>اكتمل التدريب!</h2>
                     <p><i class="fas fa-star"></i> نقاطك: ${this.trainingScore}/${this.trainingQuestions.length * 10}</p>
                     <p><i class="fas fa-percent"></i> نسبة النجاح: ${percentage}%</p>
-                    <button onclick="location.reload()" class="btn-primary">
+                    <button onclick="window.ipaTrainer.loadTraining()" class="btn-primary">
                         <i class="fas fa-redo-alt"></i> تدريب جديد
                     </button>
                 </div>
@@ -771,7 +817,12 @@ class IPATrainer {
             { word: 'dog', ipa: '/dɒɡ/' },
             { word: 'fish', ipa: '/fɪʃ/' },
             { word: 'house', ipa: '/haʊs/' },
-            { word: 'beautiful', ipa: '/ˈbjuːtɪfəl/' }
+            { word: 'beautiful', ipa: '/ˈbjuːtɪfəl/' },
+            { word: 'phone', ipa: '/fəʊn/' },
+            { word: 'mother', ipa: '/ˈmʌðə/' },
+            { word: 'father', ipa: '/ˈfɑːðə/' },
+            { word: 'school', ipa: '/skuːl/' },
+            { word: 'apple', ipa: '/ˈæpəl/' }
         ];
     }
     
@@ -797,7 +848,6 @@ class IPATrainer {
         if (results) results.style.display = 'none';
         
         const question = this.currentQuiz.questions[this.currentQuiz.current];
-        this.currentWord = question.word;
         
         if (question.type === 'multiple') {
             if (content) {
@@ -938,12 +988,14 @@ class IPATrainer {
         }
         
         this.saveHistory();
+        this.updateAchievements();
     }
     
     addPoints(points) {
         this.userHistory.totalPoints += points;
         this.saveHistory();
         this.updateUI();
+        this.updateAchievements();
     }
     
     saveHistory() {
@@ -989,16 +1041,60 @@ class IPATrainer {
         
         const vowelsProgress = document.getElementById('vowelsProgress');
         const consonantsProgress = document.getElementById('consonantsProgress');
+        const diphthongsProgress = document.getElementById('diphthongsProgress');
         const vowelsPercent = document.getElementById('vowelsPercent');
         const consonantsPercent = document.getElementById('consonantsPercent');
+        const diphthongsPercent = document.getElementById('diphthongsPercent');
         
         const vowelProgress = Math.min(100, Math.floor(this.userHistory.correctAnswers * 5));
         const consonantProgress = Math.min(100, Math.floor(this.userHistory.totalPoints / 10));
+        const diphthongProgress = Math.min(100, Math.floor(this.userHistory.totalPoints / 8));
         
         if (vowelsProgress) vowelsProgress.style.width = `${vowelProgress}%`;
         if (consonantsProgress) consonantsProgress.style.width = `${consonantProgress}%`;
+        if (diphthongsProgress) diphthongsProgress.style.width = `${diphthongProgress}%`;
         if (vowelsPercent) vowelsPercent.textContent = `${vowelProgress}%`;
         if (consonantsPercent) consonantsPercent.textContent = `${consonantProgress}%`;
+        if (diphthongsPercent) diphthongsPercent.textContent = `${diphthongProgress}%`;
+        
+        this.updateAchievements();
+    }
+    
+    updateAchievements() {
+        const achievements = {
+            firstSearch: this.userHistory.searches.length >= 1,
+            firstQuiz: this.userHistory.quizResults.length >= 1,
+            expert: this.userHistory.totalPoints >= 500
+        };
+        
+        const achievementsGrid = document.getElementById('achievementsGrid');
+        if (achievementsGrid) {
+            const achievementCards = achievementsGrid.querySelectorAll('.achievement-card');
+            
+            if (achievementCards[0]) {
+                if (achievements.firstSearch) {
+                    achievementCards[0].classList.remove('locked');
+                    achievementCards[0].classList.add('unlocked');
+                    achievementCards[0].innerHTML = '<i class="fas fa-star"></i><span>أول بحث</span><i class="fas fa-check-circle"></i>';
+                }
+            }
+            
+            if (achievementCards[1]) {
+                if (achievements.firstQuiz) {
+                    achievementCards[1].classList.remove('locked');
+                    achievementCards[1].classList.add('unlocked');
+                    achievementCards[1].innerHTML = '<i class="fas fa-trophy"></i><span>أول اختبار</span><i class="fas fa-check-circle"></i>';
+                }
+            }
+            
+            if (achievementCards[2]) {
+                if (achievements.expert) {
+                    achievementCards[2].classList.remove('locked');
+                    achievementCards[2].classList.add('unlocked');
+                    achievementCards[2].innerHTML = '<i class="fas fa-crown"></i><span>خبير الأصوات</span><i class="fas fa-check-circle"></i>';
+                }
+            }
+        }
     }
     
     resetHistory() {
@@ -1013,6 +1109,7 @@ class IPATrainer {
             this.saveHistory();
             this.loadHistoryPanel();
             this.updateUI();
+            this.updateAchievements();
             this.showNotification('تم مسح السجل بنجاح', 'success');
         }
     }
@@ -1047,7 +1144,7 @@ class IPATrainer {
     }
     
     loadSuggestions() {
-        const suggestions = ['think', 'this', 'cat', 'dog', 'fish', 'house', 'beautiful', 'phone'];
+        const suggestions = ['think', 'this', 'cat', 'dog', 'fish', 'house', 'beautiful', 'phone', 'hello', 'world'];
         const container = document.getElementById('searchSuggestions');
         
         if (container) {
@@ -1056,18 +1153,6 @@ class IPATrainer {
                     <i class="fas fa-search"></i> ${word}
                 </span>
             `).join('');
-        }
-    }
-    
-    toggleTheme() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        
-        const btn = document.getElementById('themeToggle');
-        if (btn) {
-            btn.innerHTML = newTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
         }
     }
     
@@ -1112,7 +1197,7 @@ class IPATrainer {
             background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
             color: white;
             border-radius: 8px;
-            z-index: 1000;
+            z-index: 1100;
             animation: slideIn 0.3s ease;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             display: flex;
@@ -1158,40 +1243,28 @@ let ipaTrainer;
 document.addEventListener('DOMContentLoaded', () => {
     ipaTrainer = new IPATrainer();
     window.ipaTrainer = ipaTrainer;
-    
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        const btn = document.getElementById('themeToggle');
-        if (btn) {
-            btn.innerHTML = savedTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-        }
-    }
 });
 
-// Add CSS animations for notifications and responsive behavior
+// Add CSS animations
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
     }
     
     @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+    
+    .bounce {
+        animation: bounce 0.5s ease;
     }
     
     .training-complete {
@@ -1208,106 +1281,63 @@ style.textContent = `
         font-size: 1.2rem;
     }
     
-    /* Custom vowel and consonant icons */
-    .fa-vowel-sign, .fa-consonant {
-        font-family: 'Inter', monospace;
-        font-weight: 700;
-        font-size: 0.8rem;
-        background: var(--gradient-primary);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        display: inline-flex;
-        align-items: center;
+    .record-result {
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .record-result.correct {
+        background: var(--success);
+        color: white;
+    }
+    
+    .record-result.incorrect {
+        background: var(--error);
+        color: white;
+    }
+    
+    .record-animation {
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .mic-icon i {
+        font-size: 3rem;
+        animation: pulse 1s infinite;
+    }
+    
+    .sound-waves {
+        display: flex;
         justify-content: center;
-        width: 20px;
+        align-items: center;
+        gap: 5px;
+        margin-top: 15px;
     }
     
-    .fa-vowel-sign::before {
-        content: "A";
+    .sound-waves span {
+        width: 4px;
+        height: 20px;
+        background: var(--primary);
+        border-radius: 2px;
+        animation: wave 1s infinite ease-in-out;
     }
     
-    .fa-consonant::before {
-        content: "B";
+    .sound-waves span:nth-child(2) { animation-delay: 0.1s; height: 30px; }
+    .sound-waves span:nth-child(3) { animation-delay: 0.2s; height: 40px; }
+    .sound-waves span:nth-child(4) { animation-delay: 0.3s; height: 30px; }
+    
+    @keyframes wave {
+        0%, 100% { height: 20px; }
+        50% { height: 50px; }
     }
     
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .symbol-card small {
-            font-size: 0.6rem;
-        }
-        
-        .dictionary-card {
-            padding: 15px;
-        }
-        
-        .quiz-options {
-            grid-template-columns: 1fr;
-        }
-        
-        .stat-card {
-            padding: 15px;
-        }
-        
-        .stat-icon i {
-            font-size: 1.5rem;
-        }
-        
-        .stat-number {
-            font-size: 1.2rem;
-        }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
     }
     
-    @media (max-width: 480px) {
-        .btn-primary, .audio-btn, .record-btn {
-            padding: 8px 12px;
-            font-size: 0.85rem;
-        }
-        
-        .symbol-card {
-            padding: 6px 10px;
-        }
-        
-        .hero-section h2 {
-            font-size: 1.5rem;
-        }
-        
-        .hero-section p {
-            font-size: 0.9rem;
-        }
-    }
-    
-    /* Landscape mode on mobile */
-    body.landscape-mobile .result-card {
-        max-height: 60vh;
-        overflow-y: auto;
-    }
-    
-    /* Touch device optimizations */
-    body.touch-device button,
-    body.touch-device .clickable {
-        min-height: 44px;
-        cursor: pointer;
-    }
-    
-    /* Performance optimization for mobile */
-    @media (max-width: 768px) {
-        .gradient-bg {
-            display: none;
-        }
-    }
-    
-    /* RTL icon adjustments */
-    i, .fas, .far, .fab {
-        margin-left: 6px;
-    }
-    
-    [dir="rtl"] i, [dir="rtl"] .fas, [dir="rtl"] .far, [dir="rtl"] .fab {
-        margin-left: 0;
-        margin-right: 6px;
-    }
-    
-    /* Loading spinner */
     .fa-spinner {
         animation: spin 0.6s linear infinite;
     }
@@ -1315,53 +1345,5 @@ style.textContent = `
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
-    
-    /* Bounce animation for buttons */
-    .bounce {
-        animation: bounce 0.5s ease;
-    }
-    
-    @keyframes bounce {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-    }
-    
-    /* Correct/Wrong button states */
-    .option-btn.correct {
-        background: var(--success);
-        border-color: var(--success);
-        color: white;
-    }
-    
-    .option-btn.correct i {
-        color: white;
-    }
-    
-    .option-btn.wrong {
-        background: var(--error);
-        border-color: var(--error);
-        color: white;
-    }
-    
-    .option-btn.wrong i {
-        color: white;
-    }
 `;
 document.head.appendChild(style);
-
-
-// developerInfo
-
-function showDeveloperInfo() {
-    const modal = document.getElementById('developerInfoModal');
-    if (modal) {
-        modal.innerHTML = `
-            <div class="developer-info-content">
-                <h2><i class="fas fa-user"></i> معلومات المطور</h2>
-                <p><i class="fas fa-id-badge"></i> الاسم: محمد الباقر</p>
-                <p><i class="fas fa-envelope"></i> البريد الإلكتروني: <a href="mailto:muhammad.albaqer@example.com">muhammad.albaqer@example.com</a></p>
-            </div>
-        `;
-        modal.style.display = 'block';
-    }
-}

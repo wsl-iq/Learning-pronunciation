@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="description" content="تطبيق تفاعلي لتعلم النطق الصحيح باستخدام الأبجدية الصوتية الدولية IPA">
+    <title>IPA Trainer | تعلم النطق الصحيح</title>
+    
+    <!-- Font Awesome 6 (Free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="developerInfo.css">
+    <meta name="theme-color" content="#667eea">
+</head>
+<body>
+    <!-- تأثيرات خلفية متحركة -->
+    <div class="gradient-bg">
+        <div class="gradient-1"></div>
+        <div class="gradient-2"></div>
+        <div class="gradient-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- شريط التنقل العلوي -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <div class="logo-icon">
+                    <i class="fas fa-microphone-alt"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>IPA Trainer</h1>
+                    <span>International Phonetic Alphabet</span>
+                </div>
+            </div>
+            <div class="nav-stats">
+                <div class="stat-item">
+                    <span class="stat-label"><i class="fas fa-star"></i> النقاط</span>
+                    <span class="stat-value" id="totalPoints">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label"><i class="fas fa-chart-line"></i> المستوى</span>
+                    <span class="stat-value" id="userLevel">مبتدئ</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </nav>
+
+        <main>
+            <!-- قسم البحث الرئيسي -->
+            <div class="hero-section">
+                <h2><i class="fas fa-graduation-cap"></i> تعلم النطق الصحيح</h2>
+                <p>اكتب أي كلمة إنجليزية لتعرف نطقها الصحيح باستخدام الأبجدية الصوتية الدولية</p>
+                
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <input type="text" id="wordInput" placeholder="مثال: think, beautiful, phone..." autocomplete="off">
+                        <button id="searchBtn" class="btn-primary">
+                            <i class="fas fa-search"></i>
+                            <span>بحث</span>
+                        </button>
+                    </div>
+                    <div class="search-suggestions" id="searchSuggestions"></div>
+                </div>
+            </div>
+
+            <!-- بطاقة النتيجة الرئيسية -->
+            <div class="result-card" id="resultCard" style="display: none;">
+                <div class="card-header">
+                    <div class="word-info">
+                        <h2 id="wordDisplay" class="word-title">-</h2>
+                        <div class="ipa-badge" id="ipaDisplay">/-/</div>
+                    </div>
+                    <div class="audio-controls">
+                        <button id="playSoundBtn" class="audio-btn" title="استمع للنطق">
+                            <i class="fas fa-volume-up"></i>
+                            <span>استمع</span>
+                        </button>
+                        <button id="recordBtn" class="record-btn" title="سجل نطقك">
+                            <i class="fas fa-microphone"></i>
+                            <span>سجل</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- تحليل الصوت -->
+                <div class="phonetic-breakdown">
+                    <h3><i class="fas fa-chart-simple"></i> تحليل الصوت</h3>
+                    <div class="breakdown-container">
+                        <div class="breakdown-card start">
+                            <div class="breakdown-label"><i class="fas fa-play"></i> بداية</div>
+                            <div class="breakdown-symbol" id="startSymbol">-</div>
+                            <div class="breakdown-example" id="startExample"></div>
+                        </div>
+                        <div class="breakdown-arrow"><i class="fas fa-arrow-left"></i></div>
+                        <div class="breakdown-card middle">
+                            <div class="breakdown-label"><i class="fas fa-circle"></i> وسط</div>
+                            <div class="breakdown-symbol" id="middleSymbol">-</div>
+                            <div class="breakdown-example" id="middleExample"></div>
+                        </div>
+                        <div class="breakdown-arrow"><i class="fas fa-arrow-left"></i></div>
+                        <div class="breakdown-card end">
+                            <div class="breakdown-label"><i class="fas fa-stop"></i> نهاية</div>
+                            <div class="breakdown-symbol" id="endSymbol">-</div>
+                            <div class="breakdown-example" id="endExample"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- شبكة الرموز الصوتية -->
+                <div class="symbols-section">
+                    <h3><i class="fas fa-table-cells-large"></i> الرموز الصوتية (قابلة للنقر)</h3>
+                    <div class="symbols-grid" id="symbolsGrid"></div>
+                </div>
+            </div>
+
+            <!-- تبويبات المحتوى -->
+            <div class="tabs-container">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="training">
+                        <i class="fas fa-dumbbell"></i>
+                        <span>وضع التدريب</span>
+                    </button>
+                    <button class="tab-btn" data-tab="quiz">
+                        <i class="fas fa-pen-to-square"></i>
+                        <span>الاختبارات</span>
+                    </button>
+                    <button class="tab-btn" data-tab="dictionary">
+                        <i class="fas fa-book"></i>
+                        <span>قاموس الأصوات</span>
+                    </button>
+                    <button class="tab-btn" data-tab="history">
+                        <i class="fas fa-chart-line"></i>
+                        <span>تقدمي</span>
+                    </button>
+
+                    <button class="tab-btn" data-tab="developer">
+                        <i class="fas fa-code"></i>
+                        <span>حول التطبيق</span>
+                    </button>
+                </div>
+
+
+                <!-- لوحة التدريب -->
+                <div id="trainingPanel" class="tab-panel active">
+                    <div class="training-container">
+                        <div class="training-header">
+                            <h3><i class="fas fa-bullseye"></i> تدريب على الرموز الصوتية</h3>
+                            <p>استمع للصوت واختر الرمز الصحيح</p>
+                            <div class="training-stats">
+                                <span><i class="fas fa-question-circle"></i> السؤال <span id="currentQuestion">1</span>/<span id="totalQuestions">10</span></span>
+                                <span><i class="fas fa-star"></i> النقاط: <span id="trainingScore">0</span></span>
+                            </div>
+                        </div>
+                        <div class="training-content">
+                            <div class="audio-player-large" id="trainingAudioPlayer">
+                                <button id="playTrainingSound" class="play-large-btn">
+                                    <i class="fas fa-headphones"></i>
+                                    <span>استمع للصوت</span>
+                                </button>
+                            </div>
+                            <div class="options-grid" id="trainingOptions"></div>
+                        </div>
+                        <div class="training-feedback" id="trainingFeedback"></div>
+                        <button id="nextTrainingQuestion" class="btn-next" style="display: none;">
+                            <i class="fas fa-arrow-left"></i> السؤال التالي
+                        </button>
+                    </div>
+                </div>
+
+                <!-- لوحة الاختبارات -->
+                <div id="quizPanel" class="tab-panel">
+                    <div class="quiz-container">
+                        <div class="quiz-header">
+                            <h3><i class="fas fa-clipboard-list"></i> اختبار شامل</h3>
+                            <div class="quiz-controls">
+                                <select id="quizType" class="quiz-select">
+                                    <option value="multiple">اختيار من متعدد</option>
+                                    <option value="writing">كتابة الرمز الصحيح</option>
+                                    <option value="ordering">ترتيب الرموز</option>
+                                </select>
+                                <button id="startQuiz" class="btn-primary">
+                                    <i class="fas fa-play"></i> بدء الاختبار
+                                </button>
+                            </div>
+                        </div>
+                        <div id="quizContent" class="quiz-content">
+                            <div class="quiz-placeholder">
+                                <i class="fas fa-trophy"></i>
+                                <p>اختر نوع الاختبار واضغط بدء</p>
+                            </div>
+                        </div>
+                        <div class="quiz-results" id="quizResults" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- قاموس الأصوات -->
+                <div id="dictionaryPanel" class="tab-panel">
+                    <div class="dictionary-container">
+                        <h3><i class="fas fa-book-open"></i> قاموس الأصوات الصوتية IPA</h3>
+                        <div class="dictionary-filters">
+                            <button class="filter-btn active" data-filter="all" type="button">
+                                <i class="fas fa-globe"></i> الكل
+                            </button>
+                            <button class="filter-btn" data-filter="vowel" type="button">
+                                <i class="fas fa-music"></i> حروف متحركة
+                            </button>
+                            <button class="filter-btn" data-filter="consonant" type="button">
+                                <i class="fas fa-bars"></i> حروف ساكنة
+                            </button>
+                        </div>
+                        <div class="dictionary-grid" id="dictionaryGrid"></div>
+                    </div>
+                </div>
+
+                <!-- لوحة التقدم -->
+                <div id="historyPanel" class="tab-panel">
+                    <div class="history-container">
+                        <div class="stats-overview">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-number" id="searchedWordsCount">0</span>
+                                    <span class="stat-label">كلمة بحثت</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-number" id="correctAnswersCount">0</span>
+                                    <span class="stat-label">إجابات صحيحة</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-percent"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-number" id="successRate">0%</span>
+                                    <span class="stat-label">نسبة النجاح</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-chalkboard-user"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-number" id="trainingSessions">0</span>
+                                    <span class="stat-label">جلسة تدريب</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="history-section">
+                            <h4><i class="fas fa-clock-rotate-left"></i> سجل البحث</h4>
+                            <div id="searchHistoryList" class="history-list"></div>
+                        </div>
+                        
+                        <div class="history-section">
+                            <h4><i class="fas fa-medal"></i> نتائج الاختبارات</h4>
+                            <div id="quizHistoryList" class="history-list"></div>
+                        </div>
+                        
+                        <div class="progress-section">
+                            <h4><i class="fas fa-chart-line"></i> تقدم التعلم</h4>
+                            <div class="progress-bars">
+                                <div class="progress-item">
+                                    <span><i class="fas fa-vowel-sign"></i> الأصوات المتحركة</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="vowelsProgress" style="width: 0%"></div>
+                                    </div>
+                                    <span id="vowelsPercent">0%</span>
+                                </div>
+                                <div class="progress-item">
+                                    <span><i class="fas fa-consonant"></i> الأصوات الساكنة</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="consonantsProgress" style="width: 0%"></div>
+                                    </div>
+                                    <span id="consonantsPercent">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="resetHistory" class="btn-danger">
+                            <i class="fas fa-trash-alt"></i> مسح السجل
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- نافذة التسجيل -->
+        <div id="recordModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-microphone-alt"></i> سجل نطقك</h3>
+                    <button class="modal-close" type="button" aria-label="إغلاق">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>انطق الكلمة: <strong id="recordWord"></strong></p>
+                    <div class="record-animation" id="recordAnimation">
+                        <div class="mic-icon">
+                            <i class="fas fa-microphone-alt"></i>
+                        </div>
+                        <div class="sound-waves">
+                            <span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <button id="startRecording" class="btn-record">
+                        <i class="fas fa-circle-play"></i> ابدأ التسجيل
+                    </button>
+                    <div id="recordResult" class="record-result"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة المطور والحقوق -->
+        <div id="developerPanel" class="tab-panel">
+            <div class="developer-container">
+            <h3><i class="fas fa-code"></i> حول التطبيق </h3>
+
+            <div class="developer-section">
+                <h4><i class="fas fa-user"></i> المطور </h4>
+                <p><strong>الاسم:</strong> محمد الباقر </p>
+                <p><strong>الاختصاص:</strong> مطور برمجيات</p>
+            </div>
+
+            <div class="developer-section">
+                <h4><i class="fas fa-link"></i> التواصل</h4>
+                <p><a href="mailto:contact@example.com"><i class="fas fa-envelope"></i> البريد الإلكتروني</a></p>
+                <p><a href="https://github.com" target="_blank"><i class="fas fa-github"></i> GitHub</a></p>
+            </div>
+
+            <div class="developer-section">
+                <h4><i class="fas fa-balance-scale"></i> الحقوق </h4>
+                <p>&copy; 2026 IPA Trainer</p>
+                <p>هذا التطبيق لأغراض تعليمية.</p>
+            </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="script.js"></script>
+    <script src="screen.js"></script>
+    <script src="developerInfo.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,308 @@
+{
+  "vowels": [
+    {
+      "symbol": "iː",
+      "description": "صوت طويل، الفم مفتوح قليلاً، اللسان مرتفع للأمام",
+      "examples": ["see", "bee", "tree"],
+      "type": "vowel",
+      "position": "front"
+    },
+    {
+      "symbol": "ɪ",
+      "description": "صوت قصير، اللسان مرتفع قليلاً للأمام",
+      "examples": ["sit", "big", "fish"],
+      "type": "vowel",
+      "position": "front"
+    },
+    {
+      "symbol": "e",
+      "description": "صوت متوسط، الفم مفتوح بشكل معتدل",
+      "examples": ["bed", "red", "pen"],
+      "type": "vowel",
+      "position": "front"
+    },
+    {
+      "symbol": "æ",
+      "description": "صوت قصير، الفم مفتوح للأسفل، اللسان منخفض",
+      "examples": ["cat", "hat", "man"],
+      "type": "vowel",
+      "position": "front"
+    },
+    {
+      "symbol": "ɑː",
+      "description": "صوت طويل، الفم مفتوح بالكامل، اللسان منخفض للخلف",
+      "examples": ["car", "father", "star"],
+      "type": "vowel",
+      "position": "back"
+    },
+    {
+      "symbol": "ɒ",
+      "description": "صوت قصير، الفم مفتوح، الشفاه مستديرة",
+      "examples": ["hot", "dog", "lot"],
+      "type": "vowel",
+      "position": "back"
+    },
+    {
+      "symbol": "ɔː",
+      "description": "صوت طويل، الفم مفتوح، الشفاه مستديرة",
+      "examples": ["saw", "law", "thought"],
+      "type": "vowel",
+      "position": "back"
+    },
+    {
+      "symbol": "ʊ",
+      "description": "صوت قصير، الشفاه مستديرة قليلاً، اللسان مرتفع للخلف",
+      "examples": ["book", "look", "put"],
+      "type": "vowel",
+      "position": "back"
+    },
+    {
+      "symbol": "uː",
+      "description": "صوت طويل، الشفاه مستديرة بالكامل، اللسان مرتفع للخلف",
+      "examples": ["food", "moon", "blue"],
+      "type": "vowel",
+      "position": "back"
+    },
+    {
+      "symbol": "ʌ",
+      "description": "صوت قصير، الفم نصف مفتوح، اللسان في المنتصف",
+      "examples": ["cup", "sun", "bus"],
+      "type": "vowel",
+      "position": "central"
+    },
+    {
+      "symbol": "ɜː",
+      "description": "صوت طويل، اللسان في المنتصف، الشفاه محايدة",
+      "examples": ["bird", "her", "turn"],
+      "type": "vowel",
+      "position": "central"
+    },
+    {
+      "symbol": "ə",
+      "description": "صوت قصير جداً، يسمى schwa، أقصر صوت في الإنجليزية",
+      "examples": ["about", "banana", "sofa"],
+      "type": "vowel",
+      "position": "central"
+    }
+  ],
+  "consonants": [
+    {
+      "symbol": "p",
+      "description": "صوت انفجاري، الشفتان تنغلقان ثم تنفتحان مع هواء",
+      "examples": ["pen", "paper", "cup"],
+      "type": "consonant",
+      "voiced": false
+    },
+    {
+      "symbol": "b",
+      "description": "صوت انفجاري مجهور، الشفتان تنغلقان مع اهتزاز الحبال الصوتية",
+      "examples": ["book", "baby", "web"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "t",
+      "description": "صوت انفجاري، اللسان يلامس الأسنان العلوية",
+      "examples": ["tea", "table", "cat"],
+      "type": "consonant",
+      "voiced": false
+    },
+    {
+      "symbol": "d",
+      "description": "صوت انفجاري مجهور، اللسان يلامس الأسنان مع اهتزاز",
+      "examples": ["dog", "door", "red"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "k",
+      "description": "صوت انفجاري، الجزء الخلفي من اللسان يلامس الحنك",
+      "examples": ["cat", "kite", "back"],
+      "type": "consonant",
+      "voiced": false
+    },
+    {
+      "symbol": "g",
+      "description": "صوت انفجاري مجهور، الجزء الخلفي من اللسان مع اهتزاز",
+      "examples": ["go", "big", "girl"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "f",
+      "description": "صوت احتكاكي، الأسنان العلوية تلامس الشفة السفلية",
+      "examples": ["fish", "phone", "leaf"],
+      "type": "consonant",
+      "voiced": false
+    },
+    {
+      "symbol": "v",
+      "description": "صوت احتكاكي مجهور، نفس مكان f مع اهتزاز",
+      "examples": ["voice", "very", "love"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "θ",
+      "description": "صوت بين الأسنان، اللسان بين الأسنان العلوية والسفلية",
+      "examples": ["think", "three", "mouth"],
+      "type": "consonant",
+      "voiced": false
+    },
+    {
+      "symbol": "ð",
+      "description": "صوت بين الأسنان مجهور، نفس مكان θ مع اهتزاز",
+      "examples": ["this", "mother", "breathe"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "s",
+      "description": "صوت صفير، اللسان قريب من الأسنان العلوية",
+      "examples": ["see", "sun", "bus"],
+      "type": "consonant",
+      "voiced": false
+    },
+    {
+      "symbol": "z",
+      "description": "صوت صفير مجهور، نفس مكان s مع اهتزاز",
+      "examples": ["zoo", "zero", "is"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "ʃ",
+      "description": "صوت ش، اللسان مرتفع للحنك",
+      "examples": ["she", "fish", "ship"],
+      "type": "consonant",
+      "voiced": false
+    },
+    {
+      "symbol": "ʒ",
+      "description": "صوت مجهور شبيه بالش، نفس مكان ʃ مع اهتزاز",
+      "examples": ["vision", "measure", "beige"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "h",
+      "description": "صوت هوائي، هواء يخرج من الحلق",
+      "examples": ["hat", "house", "hello"],
+      "type": "consonant",
+      "voiced": false
+    },
+    {
+      "symbol": "m",
+      "description": "صوت أنفي، الشفتان تنغلقان والهواء يخرج من الأنف",
+      "examples": ["man", "mother", "room"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "n",
+      "description": "صوت أنفي، اللسان يلامس الأسنان والهواء من الأنف",
+      "examples": ["no", "name", "sun"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "ŋ",
+      "description": "صوت أنفي، الجزء الخلفي من اللسان للحنك",
+      "examples": ["sing", "ring", "long"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "l",
+      "description": "صوت جانبي، اللسان يلامس الأسنان والهواء من الجوانب",
+      "examples": ["love", "light", "ball"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "r",
+      "description": "صوت لثوي، اللسان يقترب من الحنك دون لمسه",
+      "examples": ["red", "run", "car"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "j",
+      "description": "صوت شبه صامت، يشبه حرف y",
+      "examples": ["yes", "you", "yellow"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "w",
+      "description": "صوت شبه صامت، الشفتان مستديرتان",
+      "examples": ["we", "water", "want"],
+      "type": "consonant",
+      "voiced": true
+    },
+    {
+      "symbol": "tʃ",
+      "description": "صوت مركب تش، انفجاري ثم احتكاكي",
+      "examples": ["church", "chair", "watch"],
+      "type": "consonant",
+      "voiced": false
+    },
+    {
+      "symbol": "dʒ",
+      "description": "صوت مركب ج، انفجاري ثم احتكاكي مجهور",
+      "examples": ["judge", "job", "age"],
+      "type": "consonant",
+      "voiced": true
+    }
+  ],
+  "diphthongs": [
+    {
+      "symbol": "eɪ",
+      "description": "صوت مزدوج، يبدأ e وينتهي بـ ɪ",
+      "examples": ["say", "day", "make"],
+      "type": "diphthong"
+    },
+    {
+      "symbol": "aɪ",
+      "description": "صوت مزدوج، يبدأ a وينتهي بـ ɪ",
+      "examples": ["my", "eye", "time"],
+      "type": "diphthong"
+    },
+    {
+      "symbol": "ɔɪ",
+      "description": "صوت مزدوج، يبدأ ɔ وينتهي بـ ɪ",
+      "examples": ["boy", "toy", "joy"],
+      "type": "diphthong"
+    },
+    {
+      "symbol": "əʊ",
+      "description": "صوت مزدوج، يبدأ ə وينتهي بـ ʊ",
+      "examples": ["go", "no", "home"],
+      "type": "diphthong"
+    },
+    {
+      "symbol": "aʊ",
+      "description": "صوت مزدوج، يبدأ a وينتهي بـ ʊ",
+      "examples": ["now", "how", "cow"],
+      "type": "diphthong"
+    },
+    {
+      "symbol": "ɪə",
+      "description": "صوت مزدوج، يبدأ ɪ وينتهي بـ ə",
+      "examples": ["here", "near", "fear"],
+      "type": "diphthong"
+    },
+    {
+      "symbol": "eə",
+      "description": "صوت مزدوج، يبدأ e وينتهي بـ ə",
+      "examples": ["hair", "care", "air"],
+      "type": "diphthong"
+    },
+    {
+      "symbol": "ʊə",
+      "description": "صوت مزدوج، يبدأ ʊ وينتهي بـ ə",
+      "examples": ["pure", "cure", "tour"],
+      "type": "diphthong"
+    }
+  ]
+}

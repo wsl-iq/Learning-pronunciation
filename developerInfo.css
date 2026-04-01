@@ -1,0 +1,49 @@
+/* زر حول التطبيق داخل التبويبات */
+#developerInfoBtn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+
+    background: transparent;
+    color: #555;
+
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+/* hover */
+#developerInfoBtn:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+/* لما تضغط */
+#developerInfoBtn:active {
+    transform: scale(0.96);
+}
+
+/* أيقونة */
+#developerInfoBtn i {
+    font-size: 13px;
+}
+
+.developer-container {
+    padding: 20px;
+}
+
+.developer-section {
+    margin-bottom: 20px;
+}
+
+.developer-section h4 {
+    margin-bottom: 8px;
+    color: #667eea;
+}

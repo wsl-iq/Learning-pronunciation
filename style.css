@@ -1609,3 +1609,67 @@ body {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.1); }
 }
+
+/*screen sizes*/
+@media screen and (max-width: 768px) {
+    .app-container {
+        padding: 10px;
+    }
+    
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .hero-section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .breakdown-container {
+        flex-direction: column;
+    }
+    
+    .breakdown-arrow i {
+        transform: rotate(90deg);
+    }
+    
+    .stats-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        width: 100%;
+        right: -100%;
+    }
+    
+    .history-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-icon i {
+        font-size: 1.5rem;
+    }
+    .achievements-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    .achievement-card {
+        padding: 10px;
+    }
+    .achievement-card i {
+        font-size: 1.5rem;
+    }
+    .achievement-card span {
+        font-size: 0.7rem;
+    }
+}

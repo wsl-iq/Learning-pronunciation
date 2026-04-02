@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <meta name="description" content="تطبيق تفاعلي لتعلم النطق الصحيح باستخدام الأبجدية الصوتية الدولية IPA">
     <title>IPA Trainer | تعلم النطق الصحيح</title>
     
@@ -38,7 +38,7 @@
         </div>
         
         <div class="sidebar-content">
-            <!-- القسم الرئيسي - التنقل السريع -->
+            <!-- التنقل السريع -->
             <div class="sidebar-section">
                 <div class="section-title">
                     <i class="fas fa-compass"></i>
@@ -80,7 +80,7 @@
                     <span>المظهر</span>
                 </div>
                 <div class="theme-switch-container">
-                    <button class="theme-btn active" data-theme="dark">
+                    <button class="theme-btn" data-theme="dark">
                         <i class="fas fa-moon"></i>
                         <span>الوضع الداكن</span>
                     </button>
@@ -113,34 +113,19 @@
                         <span>الترخيص</span>
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <button class="menu-item" data-page="conduct">
-                        <i class="fas fa-handshake"></i>
-                        <span>قواعد السلوك</span>
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="menu-item" data-page="contribute">
-                        <i class="fas fa-code-branch"></i>
-                        <span>المساهمة</span>
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
                 </div>
             </div>
 
-            <!-- قسم الأمان والشروط -->
+            <!-- قسم الأمان -->
             <div class="sidebar-section">
                 <div class="section-title">
                     <i class="fas fa-shield-alt"></i>
-                    <span>الأمان والشروط</span>
+                    <span>الأمان</span>
                 </div>
                 <div class="sidebar-menu">
                     <button class="menu-item" data-page="security">
                         <i class="fas fa-shield-virus"></i>
                         <span>معلومات الأمان</span>
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="menu-item" data-page="terms-of-use">
-                        <i class="fas fa-gavel"></i>
-                        <span>شروط الاستخدام</span>
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     <button class="menu-item" data-page="data-protection">
@@ -178,6 +163,10 @@
         </div>
 
         <div class="sidebar-footer">
+            <div class="developer-credit">
+                <i class="fas fa-code"></i>
+                <span>المطور: محمد الباقر</span>
+            </div>
             <div class="version">
                 <i class="fas fa-code-branch"></i>
                 <span>الإصدار 2.0.0</span>
@@ -215,14 +204,16 @@
         </nav>
 
         <main>
-            <!-- المحتوى الرئيسي (يتم تبديله) -->
+            <!-- المحتوى الرئيسي -->
             <div id="mainContent" class="main-content">
                 
                 <!-- ==================== الصفحة الرئيسية ==================== -->
                 <div class="page active" id="page-home">
                     <div class="hero-section">
-                        <h2><i class="fas fa-graduation-cap"></i> تعلم النطق الصحيح</h2>
-                        <p>اكتب أي كلمة إنجليزية لتعرف نطقها الصحيح باستخدام الأبجدية الصوتية الدولية</p>
+                        <div class="welcome-message" id="welcomeMessage">
+                            <h2 id="greetingText"><i class="fas fa-hand-peace"></i> مرحباً بك في IPA Trainer</h2>
+                            <p>تعلم النطق الصحيح باستخدام الأبجدية الصوتية الدولية</p>
+                        </div>
                         
                         <div class="search-container">
                             <div class="search-wrapper">
@@ -359,7 +350,7 @@
                     </div>
                 </div>
 
-                <!-- ==================== تقديمي (التاريخ والإحصائيات) ==================== -->
+                <!-- ==================== تقديمي ==================== -->
                 <div class="page" id="page-history">
                     <div class="history-container">
                         <div class="stats-overview">
@@ -515,41 +506,6 @@ of this software and associated documentation files...
                     </div>
                 </div>
 
-                <div class="page" id="page-conduct">
-                    <div class="content-page">
-                        <div class="content-header">
-                            <i class="fas fa-handshake"></i>
-                            <h2>قواعد السلوك</h2>
-                        </div>
-                        <div class="content-body">
-                            <ul>
-                                <li><i class="fas fa-heart"></i> كن محترماً في التعامل مع المجتمع</li>
-                                <li><i class="fas fa-lightbulb"></i> شارك معرفتك مع الآخرين</li>
-                                <li><i class="fas fa-bug"></i> أبلغ عن الأخطاء لتحسين التطبيق</li>
-                                <li><i class="fas fa-star"></i> قدم اقتراحاتك للتطوير</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="page" id="page-contribute">
-                    <div class="content-page">
-                        <div class="content-header">
-                            <i class="fas fa-code-branch"></i>
-                            <h2>المساهمة في التطوير</h2>
-                        </div>
-                        <div class="content-body">
-                            <p>نرحب بمساهماتكم! يمكنكم المساهمة من خلال:</p>
-                            <ul>
-                                <li><i class="fab fa-github"></i> إضافة رموز IPA جديدة</li>
-                                <li><i class="fas fa-language"></i> ترجمة التطبيق للغات أخرى</li>
-                                <li><i class="fas fa-bug"></i> الإبلاغ عن الأخطاء</li>
-                                <li><i class="fas fa-lightbulb"></i> اقتراح ميزات جديدة</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="page" id="page-security">
                     <div class="content-page">
                         <div class="content-header">
@@ -563,24 +519,6 @@ of this software and associated documentation files...
                                 <li><i class="fas fa-shield-alt"></i> لا نستخدم تتبع أو تحليلات خارجية</li>
                                 <li><i class="fas fa-code"></i> الشفافية الكاملة في الكود المصدري</li>
                                 <li><i class="fas fa-sync-alt"></i> تحديثات أمان منتظمة</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="page" id="page-terms-of-use">
-                    <div class="content-page">
-                        <div class="content-header">
-                            <i class="fas fa-gavel"></i>
-                            <h2>شروط الاستخدام</h2>
-                        </div>
-                        <div class="content-body">
-                            <p>باستخدام هذا التطبيق، فإنك توافق على الالتزام بالشروط التالية:</p>
-                            <ul>
-                                <li><i class="fas fa-check"></i> استخدام التطبيق بشكل قانوني وأخلاقي</li>
-                                <li><i class="fas fa-check"></i> عدم محاولة اختراق أو تعطيل التطبيق</li>
-                                <li><i class="fas fa-check"></i> عدم استخدام المحتوى لأغراض غير تعليمية</li>
-                                <li><i class="fas fa-check"></i> احترام حقوق الملكية الفكرية</li>
                             </ul>
                         </div>
                     </div>
@@ -633,12 +571,16 @@ of this software and associated documentation files...
                             <h2>حول المطور</h2>
                         </div>
                         <div class="content-body">
-                            <p>تم تطوير IPA Trainer بواسطة فريق متخصص في مجال التعليم والتكنولوجيا.</p>
-                            <p>الرؤية: توفير أداة تعليمية مجانية وسهلة الاستخدام لمساعدة المتعلمين على تحسين نطقهم في اللغة الإنجليزية.</p>
-                            <div class="developer-info">
-                                <i class="fas fa-envelope"></i> support@ipatrainer.com<br>
-                                <i class="fab fa-github"></i> github.com/ipatrainer<br>
-                                <i class="fab fa-twitter"></i> @ipatrainer
+                            <div class="developer-profile">
+                                <i class="fas fa-laptop-code" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+                                <h3>محمد الباقر</h3>
+                                <p>مطور برمجيات مستقل</p>
+                                <p>متخصص في تطوير تطبيقات الويب التفاعلية وتجارب المستخدم المميزة.</p>
+                                <div class="developer-info">
+                                    <i class="fas fa-envelope"></i> mohamed@ipatrainer.com<br>
+                                    <i class="fab fa-github"></i> github.com/mohamedalbager<br>
+                                    <i class="fab fa-linkedin"></i> linkedin.com/in/mohamedalbager
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -655,13 +597,10 @@ of this software and associated documentation files...
                             <ul>
                                 <li><i class="fas fa-envelope"></i> راسلنا على: support@ipatrainer.com</li>
                                 <li><i class="fab fa-github"></i> افتح Issue على GitHub</li>
-                                <li><i class="fas fa-question-circle"></i> راجع الأسئلة الشائعة في صفحة المساعدة</li>
+                                <li><i class="fas fa-question-circle"></i> راجع الأسئلة الشائعة</li>
                             </ul>
                             <div class="support-buttons">
-                                <button class="btn-primary" onclick="window.location.href='mailto:support@ipatrainer.com'">
-                                    <i class="fas fa-envelope"></i> تواصل معنا
-                                </button>
-                                <button class="btn-secondary" id="reportIssueBtn">
+                                <button class="btn-primary" id="reportIssueBtn">
                                     <i class="fas fa-bug"></i> الإبلاغ عن مشكلة
                                 </button>
                             </div>
@@ -670,6 +609,22 @@ of this software and associated documentation files...
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- Modal لتسجيل الاسم -->
+    <div id="nameModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> مرحباً بك!</h3>
+            </div>
+            <div class="modal-body">
+                <p>من فضلك أدخل اسمك لبدء الرحلة:</p>
+                <input type="text" id="userNameInput" class="quiz-input" placeholder="اسمك..." style="text-align: right;">
+                <button id="saveUserNameBtn" class="btn-primary" style="width: 100%; margin-top: 15px;">
+                    <i class="fas fa-check"></i> بدء التعلم
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Modal للرموز الصوتية -->

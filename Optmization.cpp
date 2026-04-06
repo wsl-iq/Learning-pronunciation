@@ -4,9 +4,7 @@ class MyApp : public AppListener {
 public:
     void OnCreate() override {
         view_->LoadURL("index.html");
-        
         view_->EvaluateScript(R"(
-            // استدعاء دالة C++ من JavaScript
             window.nativeFunction = function(data) {
                 return NativeAPI.processData(data);
             };

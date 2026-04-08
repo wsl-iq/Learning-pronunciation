@@ -1507,7 +1507,8 @@ class IPATrainer {
     }
 }
 
-// Initialize app when DOM is ready
+
+
 let ipaTrainer;
 document.addEventListener('DOMContentLoaded', () => {
     ipaTrainer = new IPATrainer();
@@ -1538,6 +1539,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+//document.getElementById('changeNameBtn')?.addEventListener('click', () => {
+//    const currentName = localStorage.getItem('userName') || '';
+//    const newName = prompt('أدخل اسمك الجديد:', currentName);
+//    if (newName) {
+//        localStorage.setItem('userName', newName.trim());
+//        const greetingText = document.getElementById('greetingText');
+//        if (greetingText) {
+//            greetingText.innerHTML = `<i class="fas fa-hand-peace"></i> مرحباً ${newName.trim()} في IPA Trainer`;
+//        }
+//    }
+//});
 
 // Add CSS animations
 const style = document.createElement('style');

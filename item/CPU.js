@@ -3,4 +3,5 @@ for(let i = 0; i < 100; i++) {
 }
 element.style.transform = 'translateX(100px)';
 window.addEventListener('scroll', _.throttle(() => {
+    console.log('Scroll event');
 }, 100));

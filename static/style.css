@@ -1690,6 +1690,8 @@ body {
 
 /* Now Code for Team Page */
 
+/* Team Page Styles */
+
 .content-body {
     font-family: 'Cairo', sans-serif;
     line-height: 1.8;
@@ -1699,31 +1701,60 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .team-list li {
     display: flex;
     flex-direction: column;
+    align-items: center;
     text-align: center;
     width: 100%;
-    align-items: flex-start;
     gap: 10px;
     animation: fadeInUp 0.5s ease;
-
-    padding: 12px 14px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    transition: 0.25s ease;
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    transition: all var(--transition-normal);
 }
 
-@media (max-width: 600px) {
-    .team-list li {
-        flex-direction: row;
-        align-items: center;
-        text-align: left;
-    }
+.team-list li:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary);
+    background: var(--bg-hover);
+}
+
+.team-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.team-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.team-role {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.team-title {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+.team-list i {
+    color: var(--primary);
+    font-size: 1.2rem;
 }
 
 @keyframes fadeInUp {
@@ -1737,39 +1768,38 @@ body {
     }
 }
 
-.team-list li:hover {
-    transform: translateY(-2px);
-    background: rgba(255,255,255,0.06);
+@media (max-width: 768px) {
+    .team-list li {
+        padding: 16px;
+    }
+    
+    .team-name {
+        font-size: 1rem;
+    }
+    
+    .team-role {
+        font-size: 0.85rem;
+    }
 }
 
-.team-list i {
-    color: #4aa3ff;
-    margin-top: 4px;
-}
-
-/* container */
-.team-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.team-name {
-    font-weight: 700;
-    font-size: 15px;
-    color: #fff;
-}
-
-/* role */
-.team-role {
-    font-size: 13px;
-    color: #bbb;
-}
-
-.team-title {
-    margin-top: 15px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    font-size: 14px;
-    color: #ddd;
-    text-align: center;
+@media (max-width: 480px) {
+    .team-list {
+        gap: 12px;
+    }
+    
+    .team-list li {
+        padding: 12px;
+    }
+    
+    .team-name {
+        font-size: 0.95rem;
+    }
+    
+    .team-role {
+        font-size: 0.8rem;
+    }
+    
+    .team-title {
+        font-size: 0.75rem;
+    }
 }

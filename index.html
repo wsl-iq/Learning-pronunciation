@@ -326,26 +326,47 @@
                     </div>
                 </div>
 
+                
+
                 <div class="page" id="page-dictionary">
                     <div class="dictionary-container">
-                        <h3><i class="fas fa-book-open"></i> قاموس الأصوات الصوتية IPA</h3>
+
+                        <h3>
+                            <i class="fas fa-book-open"></i> قاموس الأصوات الصوتية IPA
+                        </h3>
+
+                        <!-- الفلاتر -->
                         <div class="dictionary-filters">
                             <button class="filter-btn active" data-filter="all">
                                 <i class="fas fa-globe"></i> الكل
                             </button>
+
                             <button class="filter-btn" data-filter="vowel">
                                 <i class="fas fa-vowel-sign"></i> حروف متحركة
                             </button>
+
                             <button class="filter-btn" data-filter="consonant">
                                 <i class="fas fa-consonant"></i> حروف ساكنة
                             </button>
+
                             <button class="filter-btn" data-filter="diphthong">
                                 <i class="fas fa-link"></i> أصوات مزدوجة
                             </button>
+
+                            <button class="filter-btn" data-filter="homophone">
+                                <i class="fas fa-similar"></i> أصوات متجانسة
+                            </button>
                         </div>
+
+                        <!-- منطقة عرض المحتوى -->
+                        <div id="words-container"></div>
+
+                        <!-- شبكة القاموس -->
                         <div class="dictionary-grid" id="dictionaryGrid"></div>
+
                     </div>
                 </div>
+                
 
                 <div class="page" id="page-history">
                     <div class="history-container">

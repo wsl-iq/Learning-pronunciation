@@ -37,6 +37,7 @@ class IPATrainer {
         this.currentTraining = 0;
         this.trainingScore = 0;
         this.currentPage = 'home';
+        this.allSymbolsForDictionary = []; // تخزين جميع الرموز للقاموس
         
         // Initialize
         this.init();
@@ -53,6 +54,7 @@ class IPATrainer {
         this.checkBrowserSupport();
         this.loadSavedSettings();
         this.setupResponsive();
+        this.setupDictionaryFilters(); // إعداد فلاتر القاموس
     }
     
     setupSidebar() {
@@ -181,10 +183,49 @@ class IPATrainer {
         try {
             const response = await fetch('data/ipa.json');
             this.ipaData = await response.json();
-            this.loadDictionary();
+            this.prepareDictionaryData(); // تجهيز بيانات القاموس
         } catch (error) {
             console.error('Error loading IPA data:', error);
             this.useFallbackData();
+            this.prepareDictionaryData();
+        }
+    }
+    
+    prepareDictionaryData() {
+        // تجهيز جميع الرموز للقاموس مع تصنيفها الصحيح
+        this.allSymbolsForDictionary = [];
+        
+        // إضافة الحروف المتحركة
+        if (this.ipaData?.vowels) {
+            this.ipaData.vowels.forEach(s => {
+                this.allSymbolsForDictionary.push({
+                    ...s,
+                    category: 'vowel',
+                    categoryName: 'حرف متحرك'
+                });
+            });
+        }
+        
+        // إضافة الحروف الساكنة
+        if (this.ipaData?.consonants) {
+            this.ipaData.consonants.forEach(s => {
+                this.allSymbolsForDictionary.push({
+                    ...s,
+                    category: 'consonant',
+                    categoryName: 'حرف ساكن'
+                });
+            });
+        }
+        
+        // إضافة الأصوات المزدوجة
+        if (this.ipaData?.diphthongs) {
+            this.ipaData.diphthongs.forEach(s => {
+                this.allSymbolsForDictionary.push({
+                    ...s,
+                    category: 'diphthong',
+                    categoryName: 'صوت مزدوج'
+                });
+            });
         }
     }
     
@@ -228,16 +269,7 @@ class IPATrainer {
                 { symbol: 'j', description: 'صوت شبه صامت مثل yes', examples: ['yes', 'you'], type: 'consonant' },
                 { symbol: 'w', description: 'صوت شبه صامت مثل we', examples: ['we', 'water'], type: 'consonant' },
                 { symbol: 'tʃ', description: 'صوت مركب مثل church', examples: ['church', 'chair'], type: 'consonant' },
-                { symbol: 'dʒ', description: 'صوت مركب مجهور مثل judge', examples: ['judge', 'job'], type: 'consonant' },
-                { symbol: 'tr', description: 'صوت مركب مثل tree', examples: ['tree', 'train'], type: 'consonant' },
-                { symbol: 'dr', description: 'صوت مركب مجهور مثل draw', examples: ['draw', 'dream'], type: 'consonant' },
-                { symbol: 'ts', description: 'صوت مركب مثل cats', examples: ['cats', 'hats'], type: 'consonant' },
-                { symbol: 'dz', description: 'صوت مركب مجهور مثل kids', examples: ['kids', 'beds'], type: 'consonant' },
-                { symbol: 'tʃr', description: 'صوت مركب مثل church', examples: ['church', 'chair'], type: 'consonant' },
-                { symbol: 'dʒr', description: 'صوت مركب مجهور مثل judge', examples: ['judge', 'job'], type: 'consonant' },
-                { symbol: 'tsr', description: 'صوت مركب مثل cats', examples: ['cats', 'hats'], type: 'consonant' },
-                { symbol: 'dzr', description: 'صوت مركب مجهور مثل kids', examples: ['kids', 'beds'], type: 'consonant' },
-    
+                { symbol: 'dʒ', description: 'صوت مركب مجهور مثل judge', examples: ['judge', 'job'], type: 'consonant' }
             ],
             diphthongs: [
                 { symbol: 'eɪ', description: 'صوت مزدوج مثل say', examples: ['say', 'day'], type: 'diphthong' },
@@ -247,60 +279,74 @@ class IPATrainer {
                 { symbol: 'aʊ', description: 'صوت مزدوج مثل now', examples: ['now', 'how'], type: 'diphthong' },
                 { symbol: 'ɪə', description: 'صوت مزدوج مثل here', examples: ['here', 'near'], type: 'diphthong' },
                 { symbol: 'eə', description: 'صوت مزدوج مثل hair', examples: ['hair', 'care'], type: 'diphthong' },
-                { symbol: 'ʊə', description: 'صوت مزدوج مثل pure', examples: ['pure', 'cure'], type: 'diphthong' },
-                { symbol: 'juː', description: 'صوت مزدوج مثل you', examples: ['you', 'use'], type: 'diphthong' },
-                { symbol: 'ɪu', description: 'صوت مزدوج مثل few', examples: ['few', 'cue'], type: 'diphthong' },
-                { symbol: 'eɪə', description: 'صوت مزدوج مثل player', examples: ['player', 'layer'], type: 'diphthong' },
-                { symbol: 'aɪə', description: 'صوت مزدوج مثل fire', examples: ['fire', 'liar'], type: 'diphthong' },
-                { symbol: 'ɔɪə', description: 'صوت مزدوج مثل lawyer', examples: ['lawyer', 'voyage'], type: 'diphthong' },
-                { symbol: 'aʊə', description: 'صوت مزدوج مثل our', examples: ['our', 'hour'], type: 'diphthong' },
-                { symbol: 'juːə', description: 'صوت مزدوج مثل pure', examples: ['pure', 'cure'], type: 'diphthong' },
-                { symbol: 'ɪəʊ', description: 'صوت مزدوج مثل hero', examples: ['hero', 'zero'], type: 'diphthong' },
-                { symbol: 'eɪu', description: 'صوت مزدوج مثل view', examples: ['view', 'cue'], type: 'diphthong' },
-                { symbol: 'aɪu', description: 'صوت مزدوج مثل buyer', examples: ['buyer', 'liar'], type: 'diphthong' },
-                { symbol: 'ɔɪu', description: 'صوت مزدوج مثل royal', examples: ['royal', 'loyal'], type: 'diphthong' },
-                { symbol: 'aʊu', description: 'صوت مزدوج مثل power', examples: ['power', 'flower'], type: 'diphthong' },
-                { symbol: 'juːu', description: 'صوت مزدوج مثل few', examples: ['few', 'cue'], type: 'diphthong' },
-                { symbol: 'ɪəu', description: 'صوت مزدوج مثل view', examples: ['view', 'cue'], type: 'diphthong' },
-                { symbol: 'eɪəu', description: 'صوت مزدوج مثل player', examples: ['player', 'layer'], type: 'diphthong' },
-                { symbol: 'aɪəu', description: 'صوت مزدوج مثل fire', examples: ['fire', 'liar'], type: 'diphthong' },
-                { symbol: 'ɔɪəu', description: 'صوت مزدوج مثل lawyer', examples: ['lawyer', 'voyage'], type: 'diphthong' },
-                { symbol: 'aʊəu', description: 'صوت مزدوج مثل our', examples: ['our', 'hour'], type: 'diphthong' },
-                { symbol: 'juːəu', description: 'صوت مزدوج مثل pure', examples: ['pure', 'cure'], type: 'diphthong' },
-                { symbol: 'ɪəʊu', description: 'صوت مزدوج مثل hero', examples: ['hero', 'zero'], type: 'diphthong' },
-                { symbol: 'eɪuu', description: 'صوت مزدوج مثل view', examples: ['view', 'cue'], type: 'diphthong' },
-                { symbol: 'aɪuu', description: 'صوت مزدوج مثل buyer', examples: ['buyer', 'liar'], type: 'diphthong' },
-                { symbol: 'ɔɪuu', description: 'صوت مزدوج مثل royal', examples: ['royal', 'loyal'], type: 'diphthong' },
-                { symbol: 'aʊuu', description: 'صوت مزدوج مثل power', examples: ['power', 'flower'], type: 'diphthong' },
-                { symbol: 'juːuu', description: 'صوت مزدوج مثل few', examples: ['few', 'cue'], type: 'diphthong' },
-                { symbol: 'ɪəʊuu', description: 'صوت مزدوج مثل hero', examples: ['hero', 'zero'], type: 'diphthong' },
-                { symbol: 'eɪəuu', description: 'صوت مزدوج مثل player', examples: ['player', 'layer'], type: 'diphthong' },
-                { symbol: 'aɪəuu', description: 'صوت مزدوج مثل fire', examples: ['fire', 'liar'], type: 'diphthong' },
-                { symbol: 'ɔɪəuu', description: 'صوت مزدوج مثل lawyer', examples: ['lawyer', 'voyage'], type: 'diphthong' },
-                { symbol: 'aʊəuu', description: 'صوت مزدوج مثل our', examples: ['our', 'hour'], type: 'diphthong' },
-                { symbol: 'juːəuu', description: 'صوت مزدوج مثل pure', examples: ['pure', 'cure'], type: 'diphthong' },
-                { symbol: 'ɪəʊuuu', description: 'صوت مزدوج مثل hero', examples: ['hero', 'zero'], type: 'diphthong' },
-                { symbol: 'eɪəuuu', description: 'صوت مزدوج مثل player', examples: ['player', 'layer'], type: 'diphthong' },
-                { symbol: 'aɪəuuu', description: 'صوت مزدوج مثل fire', examples: ['fire', 'liar'], type: 'diphthong' },
-                { symbol: 'ɔɪəuuu', description: 'صوت مزدوج مثل lawyer', examples: ['lawyer', 'voyage'], type: 'diphthong' },
-                { symbol: 'aʊəuuu', description: 'صوت مزدوج مثل our', examples: ['our', 'hour'], type: 'diphthong' },
-                { symbol: 'juːəuuu', description: 'صوت مزدوج مثل pure', examples: ['pure', 'cure'], type: 'diphthong' },
-                { symbol: 'ɪəʊuuuu', description: 'صوت مزدوج مثل hero', examples: ['hero', 'zero'], type: 'diphthong' },
-                { symbol: 'eɪəuuuu', description: 'صوت مزدوج مثل player', examples: ['player', 'layer'], type: 'diphthong' },
-                { symbol: 'aɪəuuuu', description: 'صوت مزدوج مثل fire', examples: ['fire', 'liar'], type: 'diphthong' },
-                { symbol: 'ɔɪəuuuu', description: 'صوت مزدوج مثل lawyer', examples: ['lawyer', 'voyage'], type: 'diphthong' },
-                { symbol: 'aʊəuuuu', description: 'صوت مزدوج مثل our', examples: ['our', 'hour'], type: 'diphthong' },
-                { symbol: 'juːəuuuu', description: 'صوت مزدوج مثل pure', examples: ['pure', 'cure'], type: 'diphthong' },
-                { symbol: 'ɪəʊuuuuu', description: 'صوت مزدوج مثل hero', examples: ['hero', 'zero'], type: 'diphthong' },
-                { symbol: 'eɪəuuuuu', description: 'صوت مزدوج مثل player', examples: ['player', 'layer'], type: 'diphthong' },
-                { symbol: 'aɪəuuuuu', description: 'صوت مزدوج مثل fire', examples: ['fire', 'liar'], type: 'diphthong' },
-                { symbol: 'ɔɪəuuuuu', description: 'صوت مزدوج مثل lawyer', examples: ['lawyer', 'voyage'], type: 'diphthong' },
-                { symbol: 'aʊəuuuuu', description: 'صوت مزدوج مثل our', examples: ['our', 'hour'], type: 'diphthong' },
-                { symbol: 'juːəuuuuu', description: 'صوت مزدوج مثل pure', examples: ['pure', 'cure'], type: 'diphthong' },
+                { symbol: 'ʊə', description: 'صوت مزدوج مثل pure', examples: ['pure', 'cure'], type: 'diphthong' }
             ]
         };
     }
-    
+
+    loadHomophones() {
+        return [
+            {
+                group: 'to / too / two',
+                words: [
+                    { word: 'to', ipa: '/tuː/', category: 'homophone' },
+                    { word: 'too', ipa: '/tuː/', category: 'homophone' },
+                    { word: 'two', ipa: '/tuː/', category: 'homophone' }
+                ]
+            },
+            {
+                group: 'there / their / they\'re',
+                words: [
+                    { word: 'there', ipa: '/ðɛər/', category: 'homophone' },
+                    { word: 'their', ipa: '/ðɛər/', category: 'homophone' },
+                    { word: "they're", ipa: '/ðɛər/', category: 'homophone' }
+                ]
+            },
+            {
+                group: 'see / sea',
+                words: [
+                    { word: 'see', ipa: '/siː/', category: 'homophone' },
+                    { word: 'sea', ipa: '/siː/', category: 'homophone' }
+                ]
+            },
+            {
+                group: 'be / bee',
+                words: [
+                    { word: 'be', ipa: '/biː/', category: 'homophone' },
+                    { word: 'bee', ipa: '/biː/', category: 'homophone' }
+                ]
+            },
+            {
+                group: 'knight / night',
+                words: [
+                    { word: 'knight', ipa: '/naɪt/', category: 'homophone' },
+                    { word: 'night', ipa: '/naɪt/', category: 'homophone' }
+                ]
+            },
+            {
+                group: 'right / write',
+                words: [
+                    { word: 'right', ipa: '/raɪt/', category: 'homophone' },
+                    { word: 'write', ipa: '/raɪt/', category: 'homophone' }
+                ]
+            },
+            {
+                group: 'new / knew',
+                words: [
+                    { word: 'new', ipa: '/njuː/', category: 'homophone' },
+                    { word: 'knew', ipa: '/njuː/', category: 'homophone' }
+                ]
+            },
+            {
+                group: 'no / know',
+                words: [
+                    { word: 'no', ipa: '/nəʊ/', category: 'homophone' },
+                    { word: 'know', ipa: '/nəʊ/', category: 'homophone' }
+                ]
+            }
+        ];
+    }
+
     setupEventListeners() {
         this.searchBtn?.addEventListener('click', () => this.searchWord());
         this.wordInput?.addEventListener('keypress', (e) => {
@@ -326,11 +372,6 @@ class IPATrainer {
         const resetBtn = document.getElementById('resetHistory');
         resetBtn?.addEventListener('click', () => this.resetHistory());
         
-        // Dictionary filters
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => this.filterDictionary(btn.dataset.filter));
-        });
-        
         // Report issue
         const reportBtn = document.getElementById('reportIssueBtn');
         const reportModal = document.getElementById('reportModal');
@@ -352,6 +393,22 @@ class IPATrainer {
         // Modal close
         document.querySelectorAll('.modal-close').forEach(btn => {
             btn.addEventListener('click', () => this.closeModal(btn.closest('.modal')));
+        });
+    }
+    
+    setupDictionaryFilters() {
+        // إعداد أزرار تصفية القاموس
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+                this.filterDictionary(filter);
+                
+                // تحديث حالة active
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+            });
         });
     }
     
@@ -437,14 +494,29 @@ class IPATrainer {
             'weak': '/wiːk/',
             'fast': '/fæst/',
             'slow': '/sləʊ/',
-            'beautiful': '/ˈbjuːtɪfəl/',
             'ugly': '/ˈʌɡli/',
             'big': '/bɪɡ/',
             'small': '/smɔːl/',
             'hot': '/hɒt/',
             'cold': '/kəʊld/',
             'new': '/njuː/',
-            'old': '/əʊld/'
+            'old': '/əʊld/',
+            'boy': '/bɔɪ/',
+            'toy': '/tɔɪ/',
+            'say': '/seɪ/',
+            'day': '/deɪ/',
+            'my': '/maɪ/',
+            'eye': '/aɪ/',
+            'go': '/ɡəʊ/',
+            'no': '/nəʊ/',
+            'now': '/naʊ/',
+            'how': '/haʊ/',
+            'here': '/hɪə/',
+            'near': '/nɪə/',
+            'hair': '/heə/',
+            'care': '/keə/',
+            'pure': '/pjʊə/',
+            'cure': '/kjʊə/'
         };
         return localWords[word] || null;
     }
@@ -466,37 +538,51 @@ class IPATrainer {
     }
     
     parseIPA(ipaString) {
-        const cleanIPA = ipaString.replace(/[\/\[\]]/g, '');
-        const symbols = cleanIPA.split('');
+        const cleanIPA = ipaString.replace(/[\/\[\]ˈˌ]/g, '');
+        const symbols = [];
         
-        const processedSymbols = [];
-        for (let i = 0; i < symbols.length; i++) {
-            if (i < symbols.length - 1 && this.isDiphthong(symbols[i] + symbols[i + 1])) {
-                processedSymbols.push(symbols[i] + symbols[i + 1]);
-                i++;
-            } else {
-                processedSymbols.push(symbols[i]);
+        // تحليل الرموز مع مراعاة الأصوات المزدوجة
+        for (let i = 0; i < cleanIPA.length; i++) {
+            // التحقق من الأصوات المزدوجة (حرفين)
+            if (i < cleanIPA.length - 1) {
+                const twoChars = cleanIPA[i] + cleanIPA[i + 1];
+                if (this.isDiphthong(twoChars)) {
+                    symbols.push(twoChars);
+                    i++;
+                    continue;
+                }
             }
+            
+            // التحقق من الرموز مع علامة الطول (ː)
+            if (i < cleanIPA.length - 1 && cleanIPA[i + 1] === 'ː') {
+                symbols.push(cleanIPA[i] + 'ː');
+                i++;
+                continue;
+            }
+            
+            symbols.push(cleanIPA[i]);
         }
         
         return {
             full: ipaString,
             clean: cleanIPA,
-            symbols: processedSymbols,
-            start: processedSymbols[0],
-            middle: processedSymbols.slice(1, -1).join(''),
-            end: processedSymbols[processedSymbols.length - 1]
+            symbols: symbols,
+            start: symbols[0] || '-',
+            middle: symbols.slice(1, -1).join('') || '-',
+            end: symbols[symbols.length - 1] || '-'
         };
     }
     
     isDiphthong(symbol) {
-        const diphthongs = ['eɪ', 'aɪ', 'ɔɪ', 'əʊ', 'aʊ', 'ɪə', 'eə', 'ʊə'];
-        return diphthongs.includes(symbol);
+        const diphthongs = ['eɪ', 'aɪ', 'ɔɪ', 'əʊ', 'aʊ', 'ɪə', 'eə', 'ʊə', 'ju', 'ɔr', 'ɛr', 'ɪr', 'ʊr'];
+        return diphthongs.includes(symbol) || 
+               (this.ipaData?.diphthongs?.some(d => d.symbol === symbol) || false);
     }
     
     displayExamples(parsed) {
         const startExample = this.getExampleForSymbol(parsed.start);
-        const middleExample = this.getExampleForSymbol(parsed.middle?.[0]);
+        const middleSymbols = parsed.middle !== '-' ? parsed.middle.split('').filter(s => s) : [];
+        const middleExample = middleSymbols.length > 0 ? this.getExampleForSymbol(middleSymbols[0]) : null;
         const endExample = this.getExampleForSymbol(parsed.end);
         
         const startExampleEl = document.getElementById('startExample');
@@ -682,6 +768,11 @@ class IPATrainer {
             if (animation) animation.style.display = 'none';
         };
         
+        this.recognition.onerror = () => {
+            if (animation) animation.style.display = 'none';
+            this.showNotification('حدث خطأ في التسجيل', 'error');
+        };
+        
         this.recognition.start();
     }
     
@@ -822,24 +913,56 @@ class IPATrainer {
         if (!grid) return;
         
         grid.innerHTML = '';
+        
         const allSymbols = [
             ...(this.ipaData?.vowels || []).map(s => ({ ...s, category: 'vowel' })),
             ...(this.ipaData?.consonants || []).map(s => ({ ...s, category: 'consonant' })),
             ...(this.ipaData?.diphthongs || []).map(s => ({ ...s, category: 'diphthong' }))
         ];
         
+        if (this.ipaData?.homophones && this.ipaData.homophones.length > 0) {
+            this.ipaData.homophones.forEach(group => {
+                const mainWord = group.word;
+                const homophonesList = group.homophones.join('، ');
+                const ipa = this.getLocalIPA(mainWord) || this.fetchIPASync(mainWord) || '/?/';
+                allSymbols.push({
+                    symbol: ipa,
+                    description: `كلمات متشابهة النطق: ${mainWord} = ${homophonesList}`,
+                    examples: [mainWord, ...group.homophones],
+                    type: 'homophone',
+                    category: 'homophone'
+                });
+            });
+        }
+        
         allSymbols.forEach(symbol => {
-            const categoryIcon = symbol.category === 'vowel' ? '<i class="fas fa-vowel-sign"></i>' :
-                                symbol.category === 'consonant' ? '<i class="fas fa-consonant"></i>' :
-                                '<i class="fas fa-link"></i>';
+            let categoryIcon;
+            switch(symbol.category) {
+                case 'vowel':
+                    categoryIcon = '<i class="fas fa-vowel-sign"></i>';
+                    break;
+                case 'consonant':
+                    categoryIcon = '<i class="fas fa-consonant"></i>';
+                    break;
+                case 'diphthong':
+                    categoryIcon = '<i class="fas fa-link"></i>';
+                    break;
+                case 'homophone':
+                    categoryIcon = '<i class="fas fa-similar"></i>';
+                    break;
+                default:
+                    categoryIcon = '<i class="fas fa-microphone-alt"></i>';
+            }
             
             const card = document.createElement('div');
             card.className = 'dictionary-card';
+            card.setAttribute('data-category', symbol.category);
+            card.setAttribute('data-symbol', symbol.symbol);
             card.innerHTML = `
                 <div class="dictionary-symbol">${categoryIcon} ${symbol.symbol}</div>
                 <div class="dictionary-description">${symbol.description || 'رمز صوتي'}</div>
                 <div class="dictionary-examples">
-                    <i class="fas fa-list"></i> أمثلة: ${symbol.examples?.slice(0, 2).join(', ') || 'غير متوفر'}
+                    <i class="fas fa-list"></i> ${symbol.examples?.slice(0, 3).join(' / ') || 'غير متوفر'}
                 </div>
                 <button class="dictionary-play" data-symbol="${symbol.symbol}">
                     <i class="fas fa-volume-up"></i> استمع
@@ -847,10 +970,49 @@ class IPATrainer {
             `;
             
             const playBtn = card.querySelector('.dictionary-play');
-            playBtn.addEventListener('click', () => this.playSymbolSound(symbol.symbol));
+            playBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (symbol.category === 'homophone') {
+                    const word = symbol.examples[0];
+                    const utterance = new SpeechSynthesisUtterance(word);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.9;
+                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    this.playSymbolSound(symbol.symbol);
+                }
+            });
             
+            card.addEventListener('click', () => this.showSymbolDetails(symbol.symbol));
             grid.appendChild(card);
         });
+    }
+
+    fetchIPASync(word) {
+        const localWords = {
+            'sea': '/siː/',
+            'see': '/siː/',
+            'be': '/biː/',
+            'bee': '/biː/',
+            'to': '/tuː/',
+            'too': '/tuː/',
+            'two': '/tuː/',
+            'there': '/ðɛər/',
+            'their': '/ðɛər/',
+            "they're": '/ðɛər/',
+            'flower': '/ˈflaʊə/',
+            'flour': '/ˈflaʊə/',
+            'knight': '/naɪt/',
+            'night': '/naɪt/',
+            'right': '/raɪt/',
+            'write': '/raɪt/',
+            'rite': '/raɪt/',
+            'pair': '/peə/',
+            'pear': '/peə/',
+            'pare': '/peə/'
+        };
+        return localWords[word] || null;
     }
     
     filterDictionary(category) {
@@ -859,17 +1021,14 @@ class IPATrainer {
         });
         
         const cards = document.querySelectorAll('.dictionary-card');
+        
         cards.forEach(card => {
+            const cardCategory = card.getAttribute('data-category');
+            
             if (category === 'all') {
                 card.style.display = 'block';
             } else {
-                const symbolText = card.querySelector('.dictionary-symbol')?.textContent || '';
-                const symbol = symbolText.replace(/[^a-zəɪʊɔːɑːθðʃʒŋ]/gi, '');
-                const symbolData = this.findSymbolData(symbol);
-                const matches = category === 'vowel' ? symbolData?.type === 'vowel' :
-                               category === 'consonant' ? symbolData?.type === 'consonant' :
-                               symbolData?.type === 'diphthong';
-                card.style.display = matches ? 'block' : 'none';
+                card.style.display = cardCategory === category ? 'block' : 'none';
             }
         });
     }
@@ -897,6 +1056,16 @@ class IPATrainer {
         };
     }
     
+    generateOptions(correctIPA, allWords) {
+        const otherIPAs = allWords
+            .map(w => w.ipa)
+            .filter(ipa => ipa !== correctIPA)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 3);
+        
+        return [correctIPA, ...otherIPAs].sort(() => 0.5 - Math.random());
+    }
+
     loadWordsData() {
         return [
             { word: 'think', ipa: '/θɪŋk/' },
@@ -916,52 +1085,16 @@ class IPATrainer {
             { word: 'water', ipa: '/ˈwɔːtə/' },
             { word: 'sun', ipa: '/sʌn/' },
             { word: 'moon', ipa: '/muːn/' },
-            { word: 'computer', ipa: '/kəmˈpjuːtə/' },
-            { word: 'language', ipa: '/ˈlæŋɡwɪdʒ/' },
-            { word: 'music', ipa: '/ˈmjuːzɪk/' },
-            { word: 'friend', ipa: '/frɛnd/' },
-            { word: 'family', ipa: '/ˈfæmɪli/' },
-            { word: 'love', ipa: '/lʌv/' },
-            { word: 'happy', ipa: '/ˈhæpi/' },
-            { word: 'sad', ipa: '/sæd/' },
-            { word: 'angry', ipa: '/ˈæŋɡri/' },
-            { word: 'excited', ipa: '/ɪkˈsaɪtɪd/' },
-            { word: 'bored', ipa: '/bɔːd/' },
-            { word: 'tired', ipa: '/ˈtaɪəd/' },
-            { word: 'strong', ipa: '/strɒŋ/' },
-            { word: 'weak', ipa: '/wiːk/' },
-            { word: 'fast', ipa: '/fæst/' },
-            { word: 'slow', ipa: '/sləʊ/' },
-            { word: 'ugly', ipa: '/ˈʌɡli/' },
-            { word: 'big', ipa: '/bɪɡ/' },
-            { word: 'small', ipa: '/smɔːl/' },
-            { word: 'hot', ipa: '/hɒt/' },
-            { word: 'cold', ipa: '/kəʊld/' },
-            { word: 'new', ipa: '/njuː/' },
-            { word: 'old', ipa: '/əʊld/' },
-            { word: 'hero', ipa: '/ˈhɪərəʊ/' },
-            { word: 'player', ipa: '/ˈpleɪə/' },
-            { word: 'fire', ipa: '/ˈfaɪə/' },
-            { word: 'lawyer', ipa: '/ˈlɔːjə/' },
-            { word: 'our', ipa: '/ˈaʊə/' },
-            { word: 'cure', ipa: '/kjʊə/' },
-            { word: 'zero', ipa: '/ˈzɪərəʊ/' },
-            { word: 'layer', ipa: '/ˈleɪə/' },
-            { word: 'liar', ipa: '/ˈlaɪə/' },
-            { word: 'voyage', ipa: '/ˈvɔɪɪdʒ/' },
-            { word: 'hour', ipa: '/ˈaʊə/' },
+            { word: 'boy', ipa: '/bɔɪ/' },
+            { word: 'toy', ipa: '/tɔɪ/' },
+            { word: 'say', ipa: '/seɪ/' },
+            { word: 'my', ipa: '/maɪ/' },
+            { word: 'go', ipa: '/ɡəʊ/' },
+            { word: 'now', ipa: '/naʊ/' },
+            { word: 'here', ipa: '/hɪə/' },
+            { word: 'hair', ipa: '/heə/' },
             { word: 'pure', ipa: '/pjʊə/' }
         ];
-    }
-    
-    generateOptions(correctIPA, words) {
-        const wrong = words
-            .filter(w => w.ipa !== correctIPA)
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 3)
-            .map(w => w.ipa);
-        
-        return [correctIPA, ...wrong].sort(() => 0.5 - Math.random());
     }
     
     displayQuizQuestion() {
@@ -982,7 +1115,7 @@ class IPATrainer {
                 content.innerHTML = `
                     <div class="quiz-question">
                         <div class="quiz-audio">
-                            <button onclick="window.ipaTrainer.playPronunciation()" class="audio-btn">
+                            <button onclick="window.ipaTrainer.playQuizWord('${question.word}')" class="audio-btn">
                                 <i class="fas fa-headphones"></i> استمع للنطق
                             </button>
                         </div>
@@ -1002,7 +1135,7 @@ class IPATrainer {
                 content.innerHTML = `
                     <div class="quiz-question">
                         <div class="quiz-audio">
-                            <button onclick="window.ipaTrainer.playPronunciation()" class="audio-btn">
+                            <button onclick="window.ipaTrainer.playQuizWord('${question.word}')" class="audio-btn">
                                 <i class="fas fa-headphones"></i> استمع للنطق
                             </button>
                         </div>
@@ -1015,6 +1148,14 @@ class IPATrainer {
                 `;
             }
         }
+    }
+    
+    playQuizWord(word) {
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
     }
     
     checkQuizAnswer(selected) {
@@ -1272,7 +1413,7 @@ class IPATrainer {
     }
     
     loadSuggestions() {
-        const suggestions = ['think', 'this', 'cat', 'dog', 'fish', 'house', 'beautiful', 'phone', 'hello', 'world'];
+        const suggestions = ['think', 'this', 'cat', 'dog', 'fish', 'house', 'beautiful', 'phone', 'hello', 'world', 'boy', 'my', 'go'];
         const container = document.getElementById('searchSuggestions');
         
         if (container) {
@@ -1371,6 +1512,31 @@ let ipaTrainer;
 document.addEventListener('DOMContentLoaded', () => {
     ipaTrainer = new IPATrainer();
     window.ipaTrainer = ipaTrainer;
+    
+    // التحقق من وجود اسم المستخدم
+    const userName = localStorage.getItem('userName');
+    if (!userName) {
+        document.getElementById('nameModal').classList.add('active');
+    } else {
+        const greetingText = document.getElementById('greetingText');
+        if (greetingText) {
+            greetingText.innerHTML = `<i class="fas fa-hand-peace"></i> مرحباً ${userName} في IPA Trainer`;
+        }
+    }
+    
+    // حفظ اسم المستخدم
+    document.getElementById('saveUserNameBtn')?.addEventListener('click', () => {
+        const nameInput = document.getElementById('userNameInput');
+        const name = nameInput?.value.trim();
+        if (name) {
+            localStorage.setItem('userName', name);
+            document.getElementById('nameModal').classList.remove('active');
+            const greetingText = document.getElementById('greetingText');
+            if (greetingText) {
+                greetingText.innerHTML = `<i class="fas fa-hand-peace"></i> مرحباً ${name} في IPA Trainer`;
+            }
+        }
+    });
 });
 
 // Add CSS animations
@@ -1473,6 +1639,188 @@ style.textContent = `
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
+    
+    .dictionary-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .dictionary-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .option-btn.correct {
+        background: #10b981 !important;
+        color: white !important;
+        border-color: #10b981 !important;
+    }
+    
+    .option-btn.wrong {
+        background: #ef4444 !important;
+        color: white !important;
+        border-color: #ef4444 !important;
+    }
+    
+    .training-feedback.success {
+        color: #10b981;
+    }
+    
+    .training-feedback.error {
+        color: #ef4444;
+    }
+    
+    /* ===== إصلاح حقل الاسم في النافذة المنبثقة (Modal) ===== */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+    }
+    
+    .modal.active {
+        display: flex;
+    }
+    
+    .modal-content {
+        background: var(--bg-primary);
+        border-radius: 20px;
+        width: 90%;
+        max-width: 450px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3);
+        animation: modalFadeIn 0.3s ease;
+    }
+    
+    @keyframes modalFadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border-color);
+        background: var(--bg-secondary);
+        border-radius: 20px 20px 0 0;
+    }
+    
+    .modal-header h3 {
+        margin: 0;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-primary);
+    }
+    
+    .modal-header h3 i {
+        color: var(--primary);
+    }
+    
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: var(--text-secondary);
+        transition: all 0.2s;
+        line-height: 1;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    
+    .modal-close:hover {
+        background: var(--hover-bg);
+        color: var(--text-primary);
+    }
+    
+    .modal-body {
+        padding: 24px;
+    }
+    
+    .modal-body p {
+        margin-bottom: 15px;
+        color: var(--text-primary);
+    }
+    
+    /* تنسيق حقل الإدخال داخل المودال */
+    .modal-body input,
+    .modal-body textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        background: var(--input-bg);
+        color: var(--text-primary);
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.2s;
+        box-sizing: border-box;
+    }
+    
+    .modal-body input:focus,
+    .modal-body textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+    
+    .modal-body input {
+        text-align: right;
+        direction: rtl;
+    }
+    
+    /* تنسيق الزر داخل المودال */
+    .modal-body .btn-primary {
+        width: 100%;
+        margin-top: 15px;
+        padding: 12px;
+        font-size: 1rem;
+    }
+    
+    /* نافذة الاسم - تحسينات إضافية */
+    #nameModal .modal-content {
+        max-width: 400px;
+    }
+    
+    #userNameInput {
+        font-size: 1.1rem;
+        text-align: center !important;
+        letter-spacing: 0.5px;
+    }
+    
+    /* منع overflow في الصفحات الصغيرة */
+    @media (max-width: 768px) {
+        .modal-content {
+            width: 95%;
+            margin: 20px;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+    }
 `;
 document.head.appendChild(style);
-

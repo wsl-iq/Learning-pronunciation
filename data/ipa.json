@@ -334,5 +334,39 @@
       "examples": ["power", "flower", "shower"],
       "type": "diphthong"
     }
+  ],
+  "homophones": [
+    {
+      "word": "sea",
+      "homophones": ["see"]
+    },
+    {
+      "word": "to",
+      "homophones": ["two", "too"]
+    },
+    {
+      "word": "there",
+      "homophones": ["their", "they're"]
+    },
+    {
+      "word": "be",
+      "homophones": ["bee"]
+    },
+    {
+      "word": "flower",
+      "homophones": ["flour"]
+    },
+    {
+      "word": "knight",
+      "homophones": ["night"]
+    },
+    {
+      "word": "right",
+      "homophones": ["write", "rite"]
+    },
+    {
+      "word": "pair",
+      "homophones": ["pear", "pare"]
+    }
   ]
 }

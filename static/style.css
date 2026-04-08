@@ -16,7 +16,6 @@
 }
 
 :root {
-    /* Colors - Dark Mode (Default) */
     --bg-primary: #0a0c12;
     --bg-secondary: #11131c;
     --bg-card: #151821;
@@ -46,7 +45,6 @@
     --sidebar-width: 280px;
 }
 
-/* Light Mode */
 [data-theme="light"] {
     --bg-primary: #f8fafc;
     --bg-secondary: #f1f5f9;
@@ -309,9 +307,6 @@ body {
     gap: 6px;
 }
 
-/* ========================================
-   Navbar Styles
-   ======================================== */
 .app-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -409,9 +404,6 @@ body {
     transform: scale(1.05);
 }
 
-/* ========================================
-   Main Content & Pages
-   ======================================== */
 .main-content {
     min-height: 500px;
 }
@@ -430,7 +422,6 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Content Pages (Policies, Info) */
 .content-page {
     background: var(--gradient-card);
     border: 1px solid var(--border-color);
@@ -525,9 +516,6 @@ body {
     border-color: var(--primary);
 }
 
-/* ========================================
-   Hero Section & Search
-   ======================================== */
 .hero-section {
     text-align: center;
     margin-bottom: 40px;
@@ -628,9 +616,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* ========================================
-   Result Card
-   ======================================== */
 .result-card {
     background: var(--gradient-card);
     border: 1px solid var(--border-color);
@@ -698,7 +683,6 @@ body {
     transform: scale(1.02);
 }
 
-/* Phonetic Breakdown */
 .phonetic-breakdown {
     margin-bottom: 30px;
 }
@@ -749,7 +733,6 @@ body {
     color: var(--primary);
 }
 
-/* Symbols Grid */
 .symbols-section {
     margin-top: 20px;
 }
@@ -792,9 +775,6 @@ body {
     color: white;
 }
 
-/* ========================================
-   Training Mode
-   ======================================== */
 .training-container, .quiz-container, .dictionary-container, .history-container {
     max-width: 800px;
     margin: 0 auto;
@@ -921,9 +901,6 @@ body {
     box-shadow: var(--shadow-glow);
 }
 
-/* ========================================
-   Quiz Mode
-   ======================================== */
 .quiz-controls {
     display: flex;
     gap: 15px;
@@ -1011,9 +988,6 @@ body {
     text-align: center;
 }
 
-/* ========================================
-   Dictionary
-   ======================================== */
 .dictionary-filters {
     display: flex;
     gap: 10px;
@@ -1104,9 +1078,6 @@ body {
     color: white;
 }
 
-/* ========================================
-   History Panel & Achievements
-   ======================================== */
 .stats-overview {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1241,7 +1212,6 @@ body {
     transition: width var(--transition-normal);
 }
 
-/* Achievements Section */
 .achievements-section {
     margin-bottom: 30px;
 }
@@ -1335,9 +1305,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* ========================================
-   Modal
-   ======================================== */
 .modal {
     display: none;
     position: fixed;
@@ -1436,9 +1403,6 @@ body {
     margin-bottom: 15px;
 }
 
-/* ========================================
-   Responsive Design
-   ======================================== */
 @media (max-width: 768px) {
     .app-container {
         padding: 10px;
@@ -1545,7 +1509,6 @@ body {
     }
 }
 
-/* Custom vowel and consonant icons */
 .fa-vowel-sign, .fa-consonant {
     font-family: 'Inter', monospace;
     font-weight: 700;
@@ -1568,7 +1531,6 @@ body {
     content: "B";
 }
 
-/* Scrollbar Styling */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -1588,13 +1550,11 @@ body {
     background: var(--primary-hover);
 }
 
-/* Selection */
 ::selection {
     background: var(--primary);
     color: white;
 }
 
-/* Loading spinner */
 .fa-spinner {
     animation: spin 0.6s linear infinite;
 }
@@ -1603,7 +1563,6 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* Bounce animation */
 .bounce {
     animation: bounce 0.5s ease;
 }
@@ -1613,7 +1572,6 @@ body {
     50% { transform: scale(1.1); }
 }
 
-/*screen sizes*/
 @media screen and (max-width: 768px) {
     .app-container {
         padding: 10px;
@@ -1677,8 +1635,6 @@ body {
     }
 }
 
-/* Extra small screens */
-
 @media screen and (max-width: 480px) {
     .card-header {
         flex-direction: column;
@@ -1732,3 +1688,88 @@ body {
 }
 
 
+/* Now Code for Team Page */
+
+.content-body {
+    font-family: 'Cairo', sans-serif;
+    line-height: 1.8;
+}
+
+.team-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.team-list li {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    width: 100%;
+    align-items: flex-start;
+    gap: 10px;
+    animation: fadeInUp 0.5s ease;
+
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: 0.25s ease;
+}
+
+@media (max-width: 600px) {
+    .team-list li {
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.team-list li:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.06);
+}
+
+.team-list i {
+    color: #4aa3ff;
+    margin-top: 4px;
+}
+
+/* container */
+.team-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.team-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+}
+
+/* role */
+.team-role {
+    font-size: 13px;
+    color: #bbb;
+}
+
+.team-title {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 14px;
+    color: #ddd;
+    text-align: center;
+}

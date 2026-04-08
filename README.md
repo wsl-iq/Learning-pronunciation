@@ -8,7 +8,7 @@
 
 ### **About the Project**
 
-English Pro is an educational application designed to help learners improve their English skills, especially in pronunciation, vocabulary, and phonetics.
+English Learning Pronunciation is an educational application designed to help learners improve their English skills, especially in pronunciation, vocabulary, and phonetics.
 
 The program focuses on making learning clear, practical, and interactive, suitable for students and self-learners.
 
@@ -175,7 +175,7 @@ This program is useful for:
 
 | System   | Supported |
 |----------|----------|
-| ![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white) | [Download APK](https://appsgeyser.io/19712796/IPA%20Trainer) |
+| ![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white) | `.apk` |
 | ![iOS](https://img.shields.io/badge/iOS-000000?logo=apple&logoColor=white) | Browser |
 | ![Windows](https://custom-icon-badges.demolab.com/badge/Windows-0078D6?logo=windows11&logoColor=white) | `.exe` |
 | ![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black) | Browser |

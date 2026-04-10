@@ -1502,7 +1502,7 @@ class IPATrainer {
         }
         
         if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-            this.showNotification('المتصفح لا يدعم خاصية التسجيل', 'warning');
+            this.showNotification('المتصفح لا يدعم خاصية التسجيل الرجاء نسخ الرابط ووضعه في متصفح آخر', 'warning');
         }
     }
 }
@@ -1838,3 +1838,17 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+}
+
+// Load saved theme on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+});
+
